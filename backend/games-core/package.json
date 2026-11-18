@@ -1,0 +1,7 @@
+{
+  "name": "@sisacard/games-core",
+  "private": true,
+  "type": "module",
+  "scripts": { "dev": "tsx watch src/main.ts", "start": "tsx src/main.ts", "typecheck": "tsc --noEmit", "test": "vitest run" },
+  "dependencies": { "@sisacard/contracts": "*", "express": "^5.3.0", "socket.io": "^4.8.4" }
+}

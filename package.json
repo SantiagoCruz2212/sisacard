@@ -1,0 +1,23 @@
+{
+  "name": "sisacard",
+  "private": true,
+  "workspaces": [
+    "frontend",
+    "backend/*"
+  ],
+  "scripts": {
+    "dev": "concurrently -n gateway,auth,games,web -c yellow,blue,magenta,green \"npm run dev -w @sisacard/api-gateway\" \"npm run dev -w @sisacard/auth-service\" \"npm run dev -w @sisacard/games-core\" \"npm run dev -w @sisacard/frontend\"",
+    "start": "concurrently -n gateway,auth,games -c yellow,blue,magenta \"npm start -w @sisacard/api-gateway\" \"npm start -w @sisacard/auth-service\" \"npm start -w @sisacard/games-core\"",
+    "build": "npm run build -w @sisacard/frontend",
+    "typecheck": "npm run typecheck --workspaces --if-present",
+    "test": "npm run test --workspaces --if-present"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.6",
+    "@types/node": "^26.6.6",
+    "concurrently": "^10.0.7",
+    "tsx": "^4.23.15",
+    "typescript": "^5.9.3",
+    "vitest": "^5.1.1"
+  }
+}

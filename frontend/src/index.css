@@ -1,0 +1,50 @@
+@import 'tailwindcss';
+
+/* Tokens de diseño: fuente de verdad de color y tipografía (nunca hex sueltos en las clases). */
+@theme {
+  --color-bg: #12141c;
+  --color-card: #1c1f2b;
+  --color-line: #2b3042;
+  --color-fg: #e9ecf5;
+  --color-muted: #8d94ab;
+  --color-primary: #6c8cff;
+  --color-good: #3ecf8e;
+  --color-bad: #ff5c7a;
+  --color-bad-soft: #4a1f2b;
+  --color-table: #1f5a3d;
+  --color-table-edge: #4a301c;
+  --color-uno-red: #e5484d;
+  --color-uno-yellow: #f5c542;
+  --color-uno-green: #3ea867;
+  --color-uno-blue: #3b82f6;
+  --color-uno-wild: #1f2433;
+  --font-sans: system-ui, -apple-system, 'Segoe UI', sans-serif;
+}
+
+body {
+  margin: 0;
+  background: var(--color-bg);
+  color: var(--color-fg);
+  font-family: var(--font-sans);
+  color-scheme: dark;
+}
+
+/* Humo sobre un personaje que murió o perdió. */
+@keyframes smoke-rise {
+  0% { opacity: 0; transform: translate(0, 0) scale(0.4); }
+  15% { opacity: 0.75; }
+  100% { opacity: 0; transform: translate(var(--dx, 0px), -46px) scale(2.2); }
+}
+@keyframes smoke-wisp {
+  0% { opacity: 0; transform: translate(0, 0) scale(0.6); }
+  40% { opacity: 0.3; }
+  100% { opacity: 0; transform: translate(var(--dx, 0px), -34px) scale(1.5); }
+}
+@keyframes recoil {
+  0%, 100% { transform: translate(0, 0) rotate(0); }
+  20% { transform: translate(-3px, 2px) rotate(-4deg); }
+  40% { transform: translate(3px, -1px) rotate(3deg); }
+  60% { transform: translate(-2px, 1px) rotate(-2deg); }
+}
+.smoke-puff { animation: smoke-rise 2.4s ease-out forwards; opacity: 0; }
+.smoke-wisp { animation: smoke-wisp 4.2s ease-out infinite; opacity: 0; }
