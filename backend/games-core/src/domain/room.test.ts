@@ -91,17 +91,39 @@ describe('espectadores', () => {
 });
 
 describe('personaje', () => {
-  const valid = { hair: 'bob', hairColor: 1, skin: 2, eyes: 'angry', eyeColor: 0, mouth: 'grin', clothes: 'vest', clothesColor: 3 };
+  const valid = {
+    sex: 'female', hair: 'ponytail', hairColor: 1, skin: 2, eyes: 'wink', eyeColor: 0, mouth: 'smirk',
+    clothes: 'dress', clothesColor: 3, hat: 'crown', hatColor: 4, glasses: 'round', beard: 'none', accessory: 'earring',
+  };
 
-  it('acepta un personaje válido', () => {
+  it('acepta un personaje humano válido', () => {
     expect(parseAvatar(valid)).toEqual(valid);
+  });
+
+  it('un hombre puede elegir barba; en una mujer se ignora', () => {
+    expect(parseAvatar({ ...valid, sex: 'male', beard: 'goatee' })).toMatchObject({ sex: 'male', beard: 'goatee' });
+    expect(parseAvatar({ ...valid, sex: 'female', beard: 'goatee' })).toMatchObject({ sex: 'female', beard: 'none' });
+  });
+
+  it('no binario: solo se elige un vehículo y todo lo demás se descarta', () => {
+    expect(parseAvatar({ sex: 'nonbinary', vehicle: 'apache' })).toEqual({ sex: 'nonbinary', vehicle: 'apache' });
+    expect(parseAvatar({ sex: 'nonbinary', vehicle: 'motorcycle', hair: 'afro', hat: 'crown' })).toEqual({ sex: 'nonbinary', vehicle: 'motorcycle' });
+    expect(() => parseAvatar({ sex: 'nonbinary', vehicle: 'tanque' })).toThrow('Personaje inválido: vehicle');
+  });
+
+  it('los personajes guardados antes de los accesorios siguen siendo válidos', () => {
+    const legacy = { hair: 'bob', hairColor: 1, skin: 2, eyes: 'angry', eyeColor: 0, mouth: 'grin', clothes: 'vest', clothesColor: 3 };
+    expect(parseAvatar(legacy)).toMatchObject({ ...legacy, sex: 'male', hat: 'none', glasses: 'none', beard: 'none', accessory: 'none' });
   });
 
   it.each([
     ['estilo de pelo desconocido', { ...valid, hair: 'mohicano' }],
+    ['sexo desconocido', { ...valid, sex: 'otro' }],
     ['color fuera de la paleta', { ...valid, skin: 99 }],
+    ['color del sombrero fuera de la paleta', { ...valid, hatColor: 12 }],
     ['color con decimales', { ...valid, hairColor: 1.5 }],
     ['color como texto', { ...valid, eyeColor: '1' }],
+    ['sombrero desconocido', { ...valid, hat: 'casco' }],
     ['cuerpo vacío', undefined],
   ])('rechaza %s', (_label, input) => {
     expect(() => parseAvatar(input)).toThrow('Personaje inválido');
@@ -112,9 +134,13 @@ describe('personaje', () => {
     expect(parseAvatar(defaultAvatar('usuario-2'))).toEqual(defaultAvatar('usuario-2'));
   });
 
-  it('usuarios distintos suelen tener personajes distintos', () => {
-    const distinct = new Set(Array.from({ length: 20 }, (_, i) => JSON.stringify(defaultAvatar(`u${i}`))));
-    expect(distinct.size).toBeGreaterThan(10);
+  it('los personajes por defecto son humanos, variados y las mujeres nunca traen barba', () => {
+    const all = Array.from({ length: 60 }, (_, i) => defaultAvatar(`u${i}`));
+    expect(all.every((a) => a.sex !== 'nonbinary')).toBe(true);
+    expect(new Set(all.map((a) => JSON.stringify(a))).size).toBeGreaterThan(50);
+    expect(all.filter((a) => a.sex === 'female').every((a) => a.sex === 'female' && a.beard === 'none')).toBe(true);
+    expect(all.some((a) => a.sex === 'male')).toBe(true);
+    expect(all.some((a) => a.sex === 'female')).toBe(true);
   });
 });
 

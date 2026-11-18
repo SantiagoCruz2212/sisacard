@@ -2,10 +2,10 @@ import { fireEvent, render, screen } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 import '@/shared/config/i18n';
 import { WaitingRoom } from '@/features/room/components/waiting-room';
-import type { Avatar } from '@/shared/models/avatar';
+import { DEFAULT_HUMAN } from '@/shared/models/avatar';
 import type { RoomState } from '@/shared/models/realtime';
 
-const avatar: Avatar = { hair: 'short', hairColor: 0, skin: 0, eyes: 'normal', eyeColor: 0, mouth: 'smile', clothes: 'tshirt', clothesColor: 0 };
+const avatar = DEFAULT_HUMAN;
 
 const room = (players: number): RoomState => ({
   id: 'AB12',

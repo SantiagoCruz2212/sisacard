@@ -177,13 +177,27 @@ const stats = (await req('GET', '/api/games/stats/me', null, bots[0].token)).dat
 check('estadísticas por juego', stats.impostor?.played === 1 && stats.uno?.played === 1 && stats.uno?.points >= 3, JSON.stringify(stats));
 
 // ---- personaje y espectadores (al final: abandonar una partida a medias la termina y suma estadísticas) ----
-const goodAvatar = { hair: 'bob', hairColor: 1, skin: 2, eyes: 'angry', eyeColor: 0, mouth: 'grin', clothes: 'vest', clothesColor: 3 };
+const goodAvatar = {
+  sex: 'female', hair: 'ponytail', hairColor: 1, skin: 2, eyes: 'wink', eyeColor: 0, mouth: 'smirk',
+  clothes: 'dress', clothesColor: 3, hat: 'crown', hatColor: 4, glasses: 'round', beard: 'none', accessory: 'earring',
+};
+// Se compara sin importar el orden de las claves.
+const canon = (o) => JSON.stringify(Object.fromEntries(Object.entries(o ?? {}).sort(([a], [b]) => a.localeCompare(b))));
 check('personaje inválido → 400', (await req('PUT', '/api/games/avatar/me', { ...goodAvatar, hair: 'mohicano' }, bots[0].token)).status === 400);
 check('personaje con color fuera de paleta → 400', (await req('PUT', '/api/games/avatar/me', { ...goodAvatar, skin: 99 }, bots[0].token)).status === 400);
+check('sexo inválido → 400', (await req('PUT', '/api/games/avatar/me', { ...goodAvatar, sex: 'otro' }, bots[0].token)).status === 400);
 check('guardar personaje', (await req('PUT', '/api/games/avatar/me', goodAvatar, bots[0].token)).status === 200);
-check('leer personaje guardado', JSON.stringify((await req('GET', '/api/games/avatar/me', null, bots[0].token)).data.avatar) === JSON.stringify(goodAvatar));
-check('sin personaje guardado hay uno por defecto', Boolean((await req('GET', '/api/games/avatar/me', null, bots[1].token)).data.avatar?.hair));
+check('leer personaje guardado', canon((await req('GET', '/api/games/avatar/me', null, bots[0].token)).data.avatar) === canon(goodAvatar));
+check('sin personaje guardado hay uno por defecto', Boolean((await req('GET', '/api/games/avatar/me', null, bots[1].token)).data.avatar?.sex));
 check('personaje sin token → 401', (await req('PUT', '/api/games/avatar/me', goodAvatar)).status === 401);
+
+// no binario: solo vehículo
+const nb = await req('PUT', '/api/games/avatar/me', { sex: 'nonbinary', vehicle: 'motorcycle', hair: 'afro', hat: 'crown' }, bots[1].token);
+check('no binario: se guarda solo el vehículo', nb.status === 200 && canon(nb.data.avatar) === canon({ sex: 'nonbinary', vehicle: 'motorcycle' }), canon(nb.data.avatar));
+check('no binario: vehículo inválido → 400', (await req('PUT', '/api/games/avatar/me', { sex: 'nonbinary', vehicle: 'tanque' }, bots[1].token)).status === 400);
+check('no binario: se puede cambiar al helicóptero Apache', (await req('PUT', '/api/games/avatar/me', { sex: 'nonbinary', vehicle: 'apache' }, bots[1].token)).data.avatar?.vehicle === 'apache');
+check('mujer: la barba se descarta', (await req('PUT', '/api/games/avatar/me', { ...goodAvatar, beard: 'beard' }, bots[0].token)).data.avatar?.beard === 'none');
+await req('PUT', '/api/games/avatar/me', goodAvatar, bots[0].token);
 
 const created2 = await call(bots[0], 'room:create', { game: 'uno' });
 await call(bots[1], 'room:join', { roomId: created2.roomId });
@@ -195,7 +209,8 @@ check('el espectador figura en la sala', bots[2].room?.spectators?.some((x) => x
 check('los jugadores ven al espectador', bots[0].room?.spectators?.length === 1);
 check('el espectador no ve cartas ajenas', Array.isArray(bots[2].room?.play?.myHand) && bots[2].room.play.myHand.length === 0);
 check('el espectador no puede actuar', !(await call(bots[2], 'game:action', { type: 'draw' })).ok);
-check('el personaje viaja con cada jugador de la mesa', JSON.stringify(bots[2].room?.players?.find((x) => x.id === bots[0].user.id)?.avatar) === JSON.stringify(goodAvatar));
+check('el personaje viaja con cada jugador de la mesa', canon(bots[2].room?.players?.find((x) => x.id === bots[0].user.id)?.avatar) === canon(goodAvatar));
+check('un jugador no binario llega a la mesa como vehículo', bots[2].room?.players?.find((x) => x.id === bots[1].user.id)?.avatar?.vehicle === 'apache');
 check('el espectador no puede entrar a otra sala', !(await call(bots[2], 'room:create', { game: 'impostor' })).ok);
 await call(bots[2], 'room:leave');
 await new Promise((r) => setTimeout(r, 200));

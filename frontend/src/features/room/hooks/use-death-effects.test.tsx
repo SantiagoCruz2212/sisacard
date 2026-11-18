@@ -3,10 +3,10 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { useDeathEffects } from '@/features/room/hooks/use-death-effects';
 import { useSoundStore } from '@/shared/lib/sound-store';
 import * as sounds from '@/shared/lib/sound-effects';
-import type { Avatar } from '@/shared/models/avatar';
+import { DEFAULT_HUMAN } from '@/shared/models/avatar';
 import type { ImpostorView, RoomState } from '@/shared/models/realtime';
 
-const avatar: Avatar = { hair: 'short', hairColor: 0, skin: 0, eyes: 'normal', eyeColor: 0, mouth: 'smile', clothes: 'tshirt', clothesColor: 0 };
+const avatar = DEFAULT_HUMAN;
 const seat = (id: string, out = false) => ({ id, username: id, out, left: false, connected: true, voted: false });
 
 const room = (id: string, outIds: string[] = [], withPlay = true): RoomState => ({
