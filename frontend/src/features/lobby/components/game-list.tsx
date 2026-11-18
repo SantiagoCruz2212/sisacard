@@ -8,6 +8,7 @@ export function GameList({ onCreateRoom }: { onCreateRoom: (game: GameId) => voi
   const games = [
     { id: 'impostor', name: t('lobby.impostorName'), description: t('lobby.impostorDesc') },
     { id: 'uno', name: t('lobby.unoName'), description: t('lobby.unoDesc') },
+    { id: 'blackjack', name: t('lobby.blackjackName'), description: t('lobby.blackjackDesc') },
   ] as const;
   return (
     <Card>

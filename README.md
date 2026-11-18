@@ -2,7 +2,17 @@
 
 Juegos en el navegador para jugar entre compañeros de oficina (misma red). Perfil con usuario + contraseña de 4 números, estadísticas por juego y **tabla de clasificación por puntos**.
 
-Juegos: **Impostor** (palabra secreta, 3–12 jugadores) y **UNO** (2–10 jugadores).
+Juegos: **Impostor** (palabra secreta, 3–12 jugadores), **UNO** (2–10) y **Blackjack Royale** (2–8).
+
+## Blackjack Royale
+
+Blackjack sin crupier y en modo battle royale. Todas las manos son públicas.
+
+- Cada ronda cada jugador recibe 2 cartas y, en su turno, **pide carta** o **se planta** (20 s por turno; si se acaba el tiempo se planta). El as vale 1 u 11 y llegar a 21 planta solo.
+- **Quien se pasa de 21 queda eliminado al instante** y el ciclo se reinicia: vuelve a la ronda 1, los totales quedan en cero y se reparte de nuevo.
+- Cada **2 rondas** se suman las dos manos (máximo 42) y **sale quien quedó más lejos de 42**. Si hay empate en el último lugar salen todos los empatados; si empatan todos, no sale nadie. Después el ciclo también se reinicia.
+- Gana el último en pie. Quien abandona queda eliminado. Posiciones y puntos como en los demás juegos (los eliminados a la vez comparten posición).
+- Reglas en `backend/games-core/src/domain/blackjack/blackjack-game.ts`; sus pruebas usan barajas escritas a mano.
 
 ## Personaje, mesa, espectadores y campana
 
@@ -51,7 +61,7 @@ npm run build
 npm start            # http://TU_IP:3001
 ```
 
-Jugar sin más gente: `node infra/bots.mjs 2` (Impostor) o `node infra/bots.mjs 2 uno` crea una sala con 2 bots que se inicia sola cuando entras.
+Jugar sin más gente: `node infra/bots.mjs 2` (Impostor), `node infra/bots.mjs 2 uno` o `node infra/bots.mjs 2 blackjack` crea una sala con 2 bots que se inicia sola cuando entras.
 
 ## Arquitectura
 

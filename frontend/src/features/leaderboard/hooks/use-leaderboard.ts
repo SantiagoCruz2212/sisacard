@@ -5,7 +5,7 @@ import { useSession } from '@/shared/hooks/use-session';
 import type { GameId } from '@/shared/models/realtime';
 
 export type LeaderboardFilter = GameId | 'all';
-export const LEADERBOARD_FILTERS: LeaderboardFilter[] = ['all', 'impostor', 'uno'];
+export const LEADERBOARD_FILTERS: LeaderboardFilter[] = ['all', 'impostor', 'uno', 'blackjack'];
 
 export function useLeaderboard() {
   const { user } = useSession();

@@ -18,7 +18,7 @@ export interface LobbyState {
   rooms: { id: string; game: GameId; host: string; players: number; spectators: number; max: number; status: 'waiting' | 'playing' }[];
 }
 
-export type GameId = 'impostor' | 'uno';
+export type GameId = 'impostor' | 'uno' | 'blackjack';
 
 export interface PlaceResult {
   userId: string;
@@ -92,6 +92,52 @@ export interface UnoView {
   results: PlaceResult[] | null;
 }
 
+export interface BjCard {
+  id: number;
+  rank: string;
+  suit: '♠' | '♥' | '♦' | '♣';
+}
+
+export interface BlackjackPlayer {
+  id: string;
+  username: string;
+  cards: BjCard[];
+  value: number;
+  soft: boolean;
+  status: 'waiting' | 'stood' | 'busted' | 'out';
+  out: boolean;
+  left: boolean;
+  connected: boolean;
+  /** Valor de la mano en cada ronda del ciclo actual. */
+  roundValues: number[];
+  total: number;
+}
+
+export interface BlackjackLogEntry {
+  kind: 'bust' | 'round' | 'cut' | 'tie' | 'reset' | 'left';
+  userId?: string;
+  ids?: string[];
+  value?: number;
+  round?: number;
+}
+
+export interface BlackjackView {
+  type: 'blackjack';
+  phase: 'playing' | 'between' | 'ended';
+  round: number;
+  cycle: number;
+  target: number;
+  cutTarget: number;
+  deadline: number;
+  now: number;
+  players: BlackjackPlayer[];
+  turnId: string | null;
+  canHit: boolean;
+  canStand: boolean;
+  log: BlackjackLogEntry[];
+  results: PlaceResult[] | null;
+}
+
 export interface LeaderboardEntry {
   userId: string;
   username: string;
@@ -111,7 +157,7 @@ export interface RoomState {
   /** Quienes miran con la partida en curso. */
   spectators: (AppUser & { connected: boolean; avatar: Avatar })[];
   chat: ChatMessage[];
-  play: ImpostorView | UnoView | null;
+  play: ImpostorView | UnoView | BlackjackView | null;
 }
 
 export type PlayerStats = Record<string, Record<string, number>>;

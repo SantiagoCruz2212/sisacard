@@ -18,7 +18,7 @@ const Grid = ({ children }: { children: ReactNode }) => (
 
 export function ProfileView() {
   const { t } = useTranslation();
-  const { user, isLoading, totalPoints, impostor, uno } = useProfileStats();
+  const { user, isLoading, totalPoints, impostor, uno, blackjack } = useProfileStats();
 
   return (
     <Page>
@@ -57,6 +57,17 @@ export function ProfileView() {
               </Grid>
             ) : (
               <p className="text-sm text-muted">{t('profile.unoNoGames')}</p>
+            )}
+
+            <h3 className="mt-4 mb-2 text-base font-semibold">♠️ {t('profile.blackjackTitle')}</h3>
+            {blackjack.hasPlayed ? (
+              <Grid>
+                <Stat value={blackjack.played} label={t('profile.games')} />
+                <Stat value={blackjack.wins} label={t('profile.wins', { pct: blackjack.winRate })} />
+                <Stat value={blackjack.points} label={t('profile.points')} />
+              </Grid>
+            ) : (
+              <p className="text-sm text-muted">{t('profile.noBlackjack')}</p>
             )}
           </>
         )}

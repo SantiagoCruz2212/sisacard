@@ -1,11 +1,11 @@
 // Bots de prueba para jugar contigo sin necesitar más personas.
-// Uso: node infra/bots.mjs [cantidad=2] [impostor|uno]   (el servidor debe estar corriendo)
+// Uso: node infra/bots.mjs [cantidad=2] [impostor|uno|blackjack]   (el servidor debe estar corriendo)
 // El primer bot crea la sala y la inicia en cuanto entre un humano; todos juegan solos.
 import { io } from 'socket.io-client';
 
 const BASE = process.env.BASE ?? 'http://localhost:3001';
 const count = Number(process.argv[2] ?? 2);
-const game = process.argv[3] === 'uno' ? 'uno' : 'impostor';
+const game = ['uno', 'blackjack'].includes(process.argv[3]) ? process.argv[3] : 'impostor';
 const suffix = Math.random().toString(36).slice(2, 5);
 const WORDS = ['bonito', 'grande', 'rápido', 'común', 'antiguo', 'ruidoso', 'caliente', 'útil'];
 
@@ -33,10 +33,17 @@ for (let i = 0; i < count; i++) {
     }
     const v = room.play;
     if (!v) return bot.started && (bot.started = false);
-    const key = `${v.phase}:${v.turnId}:${v.round}:${v.myVote}:${v.guesserId}:${v.myHand?.length}:${v.top?.id}:${v.canPass}`;
+    const key = `${v.phase}:${v.turnId}:${v.round}:${v.myVote}:${v.guesserId}:${v.myHand?.length}:${v.top?.id}:${v.canPass}:${v.cycle}:${v.players?.map((p) => `${p.cards?.length}${p.status}`).join()}`;
     if (key === last) return;
     last = key;
     const wait = () => new Promise((r) => setTimeout(r, 1000 + Math.random() * 2500));
+    if (v.type === 'blackjack') {
+      if (v.turnId !== user.id || v.phase !== 'playing') return;
+      await wait();
+      const me = v.players.find((p) => p.id === user.id);
+      call('game:action', { type: me.value < 17 ? 'hit' : 'stand' });
+      return;
+    }
     if (v.type === 'uno') {
       if (v.turnId !== user.id) return;
       await wait();

@@ -1,6 +1,6 @@
 import type { Player, Scheduler } from './shared.js';
 
-export type GameId = 'impostor' | 'uno';
+export type GameId = 'impostor' | 'uno' | 'blackjack';
 
 /** Posición final de un jugador. Los empates comparten posición (1, 1, 3…). */
 export interface PlayerResult {

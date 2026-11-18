@@ -1,3 +1,4 @@
+import { BlackjackView } from '@/features/blackjack/views/blackjack-view';
 import { ImpostorView } from '@/features/impostor/views/impostor-view';
 import { RoomView } from '@/features/room/views/room-view';
 import { UnoView } from '@/features/uno/views/uno-view';
@@ -8,7 +9,13 @@ export function RoomRoute() {
   const room = useCurrentRoom();
   return (
     <RoomView>
-      {room?.play?.type === 'impostor' ? <ImpostorView /> : room?.play?.type === 'uno' ? <UnoView /> : null}
+      {room?.play?.type === 'impostor' ? (
+        <ImpostorView />
+      ) : room?.play?.type === 'uno' ? (
+        <UnoView />
+      ) : room?.play?.type === 'blackjack' ? (
+        <BlackjackView />
+      ) : null}
     </RoomView>
   );
 }

@@ -1,11 +1,11 @@
-import type { ImpostorView, UnoView } from '@/shared/models/realtime';
+import type { BlackjackView, ImpostorView, UnoView } from '@/shared/models/realtime';
 
-type Play = ImpostorView | UnoView | null;
+type Play = ImpostorView | UnoView | BlackjackView | null;
 
 /** Quién tiene que actuar ahora (turno de pista, de adivinar o de jugar carta). */
 export function activePlayerId(play: Play): string | null {
   if (!play) return null;
-  if (play.type === 'uno') return play.turnId;
+  if (play.type === 'uno' || play.type === 'blackjack') return play.turnId;
   return play.phase === 'guess' ? play.guesserId : play.turnId;
 }
 
@@ -14,6 +14,12 @@ const MEDALS = ['🥇', '🥈', '🥉'];
 /** Texto corto y estado visual de cada asiento según el juego en curso. */
 export function seatInfo(play: Play, userId: string): { label: string | null; dim: boolean } {
   if (!play) return { label: null, dim: false };
+  if (play.type === 'blackjack') {
+    const p = play.players.find((x) => x.id === userId);
+    if (!p) return { label: null, dim: false };
+    if (p.out) return { label: p.status === 'busted' ? '💥' : '✖', dim: true };
+    return { label: p.cards.length ? String(p.value) : null, dim: false };
+  }
   if (play.type === 'uno') {
     const p = play.players.find((x) => x.id === userId);
     if (!p) return { label: null, dim: false };
@@ -34,6 +40,11 @@ export function seatInfo(play: Play, userId: string): { label: string | null; di
 export function deadPlayerIds(play: Play): Set<string> {
   const dead = new Set<string>();
   if (!play) return dead;
+
+  if (play.type === 'blackjack') {
+    for (const p of play.players) if (p.out && !p.left) dead.add(p.id);
+    return dead;
+  }
 
   if (play.type === 'impostor') {
     for (const p of play.players) if (p.out && !p.left) dead.add(p.id);

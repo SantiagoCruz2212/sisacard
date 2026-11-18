@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import type { ImpostorView, UnoView } from '@/shared/models/realtime';
-import { deadPlayerIds } from '@/shared/utils/seat-info';
+import type { BlackjackPlayer, BlackjackView, ImpostorView, UnoView } from '@/shared/models/realtime';
+import { activePlayerId, deadPlayerIds, seatInfo } from '@/shared/utils/seat-info';
 
 const seat = (id: string, out = false, left = false) => ({ id, username: id, out, left, connected: true, voted: false });
 
@@ -78,5 +78,55 @@ describe('deadPlayerIds', () => {
     ];
     expect(deadPlayerIds(uno({ phase: 'playing' })).size).toBe(0);
     expect([...deadPlayerIds(uno({ phase: 'ended', results }))]).toEqual(['c']);
+  });
+});
+
+const bjPlayer = (id: string, patch: Partial<BlackjackPlayer> = {}): BlackjackPlayer => ({
+  id,
+  username: id,
+  cards: [{ id: 1, rank: '9', suit: '♠' }],
+  value: 9,
+  soft: false,
+  status: 'waiting',
+  out: false,
+  left: false,
+  connected: true,
+  roundValues: [],
+  total: 0,
+  ...patch,
+});
+
+const blackjack = (players: BlackjackPlayer[], turnId: string | null = null): BlackjackView => ({
+  type: 'blackjack',
+  phase: 'playing',
+  round: 1,
+  cycle: 1,
+  target: 21,
+  cutTarget: 42,
+  deadline: 0,
+  now: 0,
+  players,
+  turnId,
+  canHit: false,
+  canStand: false,
+  log: [],
+  results: null,
+});
+
+describe('Blackjack en la mesa', () => {
+  it('el turno activo es el del jugador que debe pedir o plantarse', () => {
+    expect(activePlayerId(blackjack([bjPlayer('a'), bjPlayer('b')], 'b'))).toBe('b');
+  });
+
+  it('quien se pasa o sale en el corte cuenta como muerto; quien se fue no', () => {
+    const play = blackjack([bjPlayer('a', { out: true, status: 'busted' }), bjPlayer('b', { out: true, status: 'out' }), bjPlayer('c', { out: true, left: true }), bjPlayer('d')]);
+    expect([...deadPlayerIds(play)].sort()).toEqual(['a', 'b']);
+  });
+
+  it('el asiento muestra el valor de la mano, 💥 si se pasó y ✖ si salió', () => {
+    const play = blackjack([bjPlayer('a', { value: 17 }), bjPlayer('b', { out: true, status: 'busted' }), bjPlayer('c', { out: true, status: 'out' })]);
+    expect(seatInfo(play, 'a')).toEqual({ label: '17', dim: false });
+    expect(seatInfo(play, 'b')).toEqual({ label: '💥', dim: true });
+    expect(seatInfo(play, 'c')).toEqual({ label: '✖', dim: true });
   });
 });

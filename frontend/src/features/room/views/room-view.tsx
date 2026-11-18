@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { TableScene } from '@/features/room/components/table-scene';
 import { WaitingRoom } from '@/features/room/components/waiting-room';
 import { useRoom } from '@/features/room/hooks/use-room';
+import { GAME_EMOJI } from '@/shared/utils/game-meta';
 import { Button } from '@/shared/ui/button';
 import { ChatBox } from '@/shared/ui/chat-box';
 import { PrivacyToggle } from '@/shared/ui/privacy-toggle';
@@ -20,7 +21,7 @@ export function RoomView({ children }: { children?: ReactNode }) {
 
   return (
     <Page>
-      <PageHeader title={`${room.game === 'uno' ? '🃏' : '🕵️'} ${t('room.title', { game: t(`gameNames.${room.game}`), id: room.id })}`}>
+      <PageHeader title={`${GAME_EMOJI[room.game]} ${t('room.title', { game: t(`gameNames.${room.game}`), id: room.id })}`}>
         <PrivacyToggle />
         <SoundToggle />
         <Button onClick={leave}>{t('room.leave')}</Button>

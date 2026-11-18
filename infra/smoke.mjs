@@ -79,7 +79,7 @@ async function playGame(game, strategy) {
           }
           return;
         }
-        const key = JSON.stringify([v.phase, v.turnId, v.round, v.myVote, v.guesserId, v.myHand?.length, v.top?.id, v.canPass]);
+        const key = JSON.stringify([v.phase, v.turnId, v.round, v.cycle, v.myVote, v.guesserId, v.myHand?.length, v.top?.id, v.canPass, v.players?.map((p) => `${p.cards?.length}${p.status}`).join()]);
         if (key === last) return;
         last = key;
         const action = strategy(v, b);
@@ -127,6 +127,18 @@ const uno = await playGame('uno', unoBot);
 const places = uno.end.results.map((r) => r.place).sort();
 check('uno: posiciones 1, 2 y 3', JSON.stringify(places) === '[1,2,3]', JSON.stringify(places));
 check('uno: puntos decrecen con la posición', uno.end.results.sort((a, b) => a.place - b.place).map((r) => r.points).join() === '10,7,3');
+
+// ---- Blackjack Royale ----
+const blackjackBot = (v, b) => {
+  if (v.turnId !== b.user.id) return;
+  const me = v.players.find((p) => p.id === b.user.id);
+  return { type: me.value < 17 ? 'hit' : 'stand' };
+};
+const bj = await playGame('blackjack', blackjackBot);
+const bjPlaces = bj.end.results.map((r) => r.place);
+check('blackjack: hay un único ganador', bjPlaces.filter((p) => p === 1).length === 1, JSON.stringify(bjPlaces));
+check('blackjack: todos tienen posición y puntos', bj.end.results.length === 3 && bj.end.results.every((r) => r.points >= 1));
+check('blackjack: el ganador cobra 10 puntos', bj.end.results.find((r) => r.place === 1)?.points === 10);
 
 // ---- votación de juegos ----
 const voteState = {};
