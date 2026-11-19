@@ -5,10 +5,12 @@ import { Server } from 'socket.io';
 import { DEV_GATEWAY_SECRET } from '@sisacard/contracts';
 import { RecordGameStats } from './application/record-game-stats.js';
 import {
+  BuyItem,
   CreateRoom,
   GetAvatar,
   GetLeaderboard,
   GetPlayerStats,
+  GetShop,
   HandlePresence,
   JoinRoom,
   LeaveRoom,
@@ -33,6 +35,7 @@ import {
 } from './infrastructure/in-memory.js';
 import { SocketIoNotifier, registerSocketHandlers } from './infrastructure/socketio-adapter.js';
 import { SqliteAvatarDirectory } from './infrastructure/sqlite-avatar-directory.js';
+import { SqliteWalletRepository } from './infrastructure/sqlite-wallet-repository.js';
 import { SqliteStatsRepository } from './infrastructure/sqlite-stats-repository.js';
 
 const PORT = Number(process.env.GAMES_PORT ?? 3102);
@@ -51,6 +54,7 @@ const history = new InMemoryChatHistory();
 const gameVotes = new InMemoryGameVoteRepository();
 const stats = new SqliteStatsRepository(`${dataDir.replace(/[\\/]+$/, '')}/games.db`);
 const avatars = new SqliteAvatarDirectory(`${dataDir.replace(/[\\/]+$/, '')}/games.db`);
+const wallet = new SqliteWalletRepository(`${dataDir.replace(/[\\/]+$/, '')}/games.db`);
 const bus = new InProcessEventBus();
 const scheduler = new SystemScheduler();
 
@@ -64,7 +68,7 @@ const joinRoom = new JoinRoom(rooms, publisher);
 const closeVote = new CloseGameVote(gameVotes, rooms, presence, scheduler, speed, votePublisher, createRoom, joinRoom);
 const getStats = new GetPlayerStats(stats);
 const getLeaderboard = new GetLeaderboard(stats);
-const recordStats = new RecordGameStats(stats);
+const recordStats = new RecordGameStats(stats, wallet);
 bus.subscribe('game.finished', (event) => recordStats.handle(event));
 
 registerSocketHandlers(
@@ -90,7 +94,9 @@ const httpApp = createHttpApp({
   getStats,
   getLeaderboard,
   getAvatar: new GetAvatar(avatars),
-  updateAvatar: new UpdateAvatar(avatars, rooms, publisher),
+  updateAvatar: new UpdateAvatar(avatars, rooms, publisher, wallet),
+  getShop: new GetShop(wallet),
+  buyItem: new BuyItem(wallet),
   gatewaySecret,
 });
 httpServer.on('request', (req, res) => {

@@ -528,6 +528,89 @@ function FaceWear({ style }: { style: HumanAvatar['accessory'] }) {
 }
 
 // ---------------------------------------------------------------- humano
+// ---------------------------------------------------------------- mascotas
+/** Mascota low-poly en la esquina inferior derecha (coordenadas locales 0..34 x 0..30). */
+function Pet({ kind }: { kind: HumanAvatar['pet'] }) {
+  const eye = <polygon points="9,11 11,11 11,13 9,13" fill="#111" />;
+  let body: JSX.Element | null = null;
+  switch (kind) {
+    case 'dog':
+      body = (
+        <>
+          <Poly p="0,2 5,-3 10,5" fill="#6b4423" />
+          <Poly p="18,5 24,-3 26,8" fill="#6b4423" />
+          <Poly p="4,4 22,4 26,14 21,26 6,26 0,14" fill="#c98b4a" />
+          <Poly p="4,4 13,4 10,14 0,14" fill="#fff" opacity={0.12} />
+          <Poly p="12,13 24,13 24,22 12,22" fill="#e8c9a0" />
+          <Poly p="21,13 25,13 25,17 21,17" fill="#111" />
+          {eye}
+          <Poly p="17,9 19,9 19,11 17,11" fill="#111" />
+        </>
+      );
+      break;
+    case 'cat':
+      body = (
+        <>
+          <Poly p="2,8 4,-2 10,6" fill="#6b7280" />
+          <Poly p="14,6 20,-2 22,8" fill="#6b7280" />
+          <Poly p="3,6 19,6 23,16 17,27 5,27 0,16" fill="#9ca3af" />
+          <Poly p="3,6 11,6 9,16 0,16" fill="#fff" opacity={0.15} />
+          <Poly p="5,12 8,12 8,15 5,15" fill="#a3e635" />
+          <Poly p="14,12 17,12 17,15 14,15" fill="#a3e635" />
+          <Poly p="10,17 13,17 11.5,19.5" fill="#f472b6" />
+          <path d="M2 19 L-4 17 M2 21 L-4 22 M21 19 L27 17 M21 21 L27 22" stroke="#e5e7eb" strokeWidth="0.8" />
+        </>
+      );
+      break;
+    case 'rabbit':
+      body = (
+        <>
+          <Poly p="4,12 6,-5 10,-5 11,12" fill="#f3f4f6" />
+          <Poly p="13,12 14,-5 18,-5 20,12" fill="#f3f4f6" />
+          <Poly p="6,10 7.5,-2 9,-2 9.5,10" fill="#f9a8d4" />
+          <Poly p="15,10 16,-2 17.5,-2 18,10" fill="#f9a8d4" />
+          <Poly p="4,12 18,12 22,20 18,28 6,28 2,20" fill="#f3f4f6" />
+          <Poly p="4,12 11,12 9,20 2,20" fill="#000" opacity={0.06} />
+          <Poly p="6,17 8,17 8,19 6,19" fill="#111" />
+          <Poly p="14,17 16,17 16,19 14,19" fill="#111" />
+          <Poly p="9,21 13,21 11,23.5" fill="#f472b6" />
+        </>
+      );
+      break;
+    case 'parrot':
+      body = (
+        <>
+          <Poly p="8,2 20,2 25,14 19,28 10,28 4,14" fill="#dc2626" />
+          <Poly p="8,2 14,2 12,14 4,14" fill="#fff" opacity={0.16} />
+          <Poly p="14,12 22,12 24,24 16,28" fill="#2563eb" />
+          <Poly p="22,7 31,12 22,14" fill="#facc15" />
+          <Poly p="12,6 16,6 16,10 12,10" fill="#fff" />
+          <Poly p="13,7 15,7 15,9 13,9" fill="#111" />
+          <Poly p="10,28 12,34 15,28" fill="#16a34a" />
+        </>
+      );
+      break;
+    case 'dragon':
+      body = (
+        <>
+          <Poly p="14,4 22,-6 27,6" fill="#15803d" />
+          <Poly p="5,8 8,-1 12,7" fill="#facc15" />
+          <Poly p="14,5 18,-1 20,6" fill="#facc15" />
+          <Poly p="3,8 17,6 25,12 23,22 9,27 0,19" fill="#22c55e" />
+          <Poly p="3,8 11,7 9,19 0,19" fill="#fff" opacity={0.14} />
+          <Poly p="6,12 10,12 10,15 6,15" fill="#fde047" />
+          <Poly p="7,13 9,13 9,15 7,15" fill="#111" />
+          <Poly p="19,14 22,14 22,16 19,16" fill="#14532d" />
+          <Poly p="14,24 20,22 18,29" fill="#f97316" opacity={0.9} />
+        </>
+      );
+      break;
+    default:
+      return null;
+  }
+  return <g transform="translate(64 90) scale(0.95)">{body}</g>;
+}
+
 function Human({ avatar }: { avatar: HumanAvatar }) {
   const c: Colors = {
     skin: PALETTE.skin[avatar.skin] ?? PALETTE.skin[0],
@@ -574,6 +657,7 @@ function Human({ avatar }: { avatar: HumanAvatar }) {
       {/* manos apoyadas en la mesa */}
       <Poly p="22,108 34,104 38,118 24,120" fill={c.skin} />
       <Poly p="78,108 66,104 62,118 76,120" fill={shade(c.skin, -0.06)} />
+      <Pet kind={avatar.pet} />
     </>
   );
 }

@@ -1,17 +1,19 @@
 import express, { type Request, type RequestHandler } from 'express';
 import { identityFromHeaders } from '@sisacard/contracts';
 import { DomainError } from '../domain/shared.js';
-import type { GetAvatar, GetLeaderboard, GetPlayerStats, UpdateAvatar } from '../application/use-cases.js';
+import type { BuyItem, GetAvatar, GetLeaderboard, GetPlayerStats, GetShop, UpdateAvatar } from '../application/use-cases.js';
 
 interface Deps {
   getStats: GetPlayerStats;
   getLeaderboard: GetLeaderboard;
   getAvatar: GetAvatar;
   updateAvatar: UpdateAvatar;
+  getShop: GetShop;
+  buyItem: BuyItem;
   gatewaySecret: string;
 }
 
-export function createHttpApp({ getStats, getLeaderboard, getAvatar, updateAvatar, gatewaySecret }: Deps) {
+export function createHttpApp({ getStats, getLeaderboard, getAvatar, updateAvatar, getShop, buyItem, gatewaySecret }: Deps) {
   const app = express();
   app.use(express.json());
 
@@ -40,6 +42,8 @@ export function createHttpApp({ getStats, getLeaderboard, getAvatar, updateAvata
   );
   app.get('/avatar/me', authed((_req, userId) => ({ avatar: getAvatar.execute(userId) })));
   app.put('/avatar/me', authed((req, userId) => ({ avatar: updateAvatar.execute(userId, req.body) })));
+  app.get('/shop/me', authed((_req, userId) => getShop.execute(userId)));
+  app.post('/shop/buy', authed((req, userId) => buyItem.execute(userId, req.body?.itemId)));
 
   return app;
 }

@@ -52,6 +52,7 @@ export const es = {
     spectate: 'Mirar',
     watching: '{{count}} mirando',
     character: '🧑‍🎤 Personaje',
+    shop: 'Tienda',
   },
   room: {
     title: '{{game}} · sala {{id}}',
@@ -190,6 +191,7 @@ export const es = {
     hatColor: 'Color de sombrero y bufanda',
     glasses: 'Lentes',
     accessory: 'Accesorio',
+    pet: 'Mascota',
     save: 'Guardar personaje',
     saved: '¡Guardado!',
     random: 'Aleatorio',
@@ -204,6 +206,7 @@ export const es = {
       glasses: { none: 'Ninguno', round: 'Redondos', square: 'Cuadrados', sunglasses: 'De sol', monocle: 'Monóculo' },
       beard: { none: 'Ninguna', stubble: 'Barba corta', mustache: 'Bigote', goatee: 'Candado', beard: 'Barba' },
       accessory: { none: 'Ninguno', earring: 'Aretes', necklace: 'Collar', scarf: 'Bufanda', bowtie: 'Corbatín', eyepatch: 'Parche', headphones: 'Audífonos' },
+      pet: { none: 'Ninguna', dog: 'Perro', cat: 'Gato', rabbit: 'Conejo', parrot: 'Loro', dragon: 'Dragón' },
     },
   },
   privacy: {
@@ -234,6 +237,15 @@ export const es = {
       reset: 'Se reinicia el ciclo: ronda 1 y totales en cero',
       left: '{{name}} abandonó la partida',
     },
+  },
+  shop: {
+    title: 'Tienda',
+    coins: '{{count}} monedas',
+    help: 'Ganas monedas al terminar cada partida (los mismos puntos y un extra por ganar). Lo que compres lo eliges en tu personaje.',
+    owned: 'Tuyo',
+    notEnough: 'Te faltan monedas',
+    locked: 'Bloqueado: cómpralo en la tienda',
+    kinds: { hair: 'Peinados', hat: 'Sombreros', glasses: 'Gafas', accessory: 'Accesorios', clothes: 'Ropa', pet: 'Mascotas' },
   },
   roulette: {
     goal: 'Un revólver de {{chambers}} cámaras con una sola bala. «Disparar» avanza a la siguiente cámara (cada vez es más probable). «Girar» mezcla el tambor: siempre 1 entre {{chambers}}.',

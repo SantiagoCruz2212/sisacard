@@ -80,3 +80,12 @@ export interface RealtimeNotifier {
   broadcastLobbyMessage(message: ChatMessage): void;
   sendVoteState(userId: string, view: GameVoteView | null): void;
 }
+
+/** Monedas y objetos comprados de cada jugador. Síncrono, igual que el directorio de personajes. */
+export interface WalletRepository {
+  balance(userId: string): number;
+  credit(userId: string, amount: number): void;
+  owned(userId: string): string[];
+  /** Descuenta el precio y registra la compra de forma atómica. Devuelve false si no alcanzan las monedas. */
+  purchase(userId: string, itemId: string, price: number): boolean;
+}

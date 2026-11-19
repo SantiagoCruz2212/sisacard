@@ -8,6 +8,7 @@ export const HAT_STYLES = ['none', 'cap', 'beanie', 'tophat', 'crown', 'headband
 export const GLASSES_STYLES = ['none', 'round', 'square', 'sunglasses', 'monocle'] as const;
 export const BEARD_STYLES = ['none', 'stubble', 'mustache', 'goatee', 'beard'] as const;
 export const ACCESSORY_STYLES = ['none', 'earring', 'necklace', 'scarf', 'bowtie', 'eyepatch', 'headphones'] as const;
+export const PET_STYLES = ['none', 'dog', 'cat', 'rabbit', 'parrot', 'dragon'] as const;
 export const VEHICLES = ['apache', 'motorcycle'] as const;
 
 export type Sex = (typeof SEXES)[number];
@@ -28,6 +29,7 @@ export interface HumanAvatar {
   glasses: (typeof GLASSES_STYLES)[number];
   beard: (typeof BEARD_STYLES)[number];
   accessory: (typeof ACCESSORY_STYLES)[number];
+  pet: (typeof PET_STYLES)[number];
 }
 
 /** "No binario" no personaliza un cuerpo: se elige un vehículo. */
@@ -65,6 +67,7 @@ export const DEFAULT_HUMAN: HumanAvatar = {
   glasses: 'none',
   beard: 'none',
   accessory: 'none',
+  pet: 'none',
 };
 
 const pick = <T,>(list: readonly T[]) => list[Math.floor(Math.random() * list.length)] as T;
@@ -85,6 +88,7 @@ export const randomHuman = (sex: 'male' | 'female' = pick(['male', 'female'] as 
   glasses: Math.random() < 0.3 ? pick(GLASSES_STYLES.slice(1)) : 'none',
   beard: sex === 'male' && Math.random() < 0.4 ? pick(BEARD_STYLES.slice(1)) : 'none',
   accessory: Math.random() < 0.3 ? pick(ACCESSORY_STYLES.slice(1)) : 'none',
+  pet: 'none',
 });
 
 export const randomAvatar = (): Avatar => randomHuman();

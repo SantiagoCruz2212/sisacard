@@ -13,6 +13,7 @@ import {
   HAT_PALETTE,
   HAT_STYLES,
   MOUTH_STYLES,
+  PET_STYLES,
   PALETTE,
   SEXES,
 } from '@/shared/models/avatar';
@@ -55,7 +56,7 @@ export function CharacterView() {
 
               {human && (
                 <>
-                  <StylePicker label={t('character.hair')} options={HAIR_STYLES} value={human.hair} nameOf={(o) => t(`character.styles.hair.${o}`)} onChange={(v) => change('hair', v)} />
+                  <StylePicker label={t('character.hair')} options={HAIR_STYLES} value={human.hair} nameOf={(o) => t(`character.styles.hair.${o}`)} onChange={(v) => change('hair', v)} isLocked={(o) => editor.isLocked('hair', o)} />
                   <SwatchPicker label={t('character.hairColor')} colors={PALETTE.hairColor} value={human.hairColor} onChange={(v) => change('hairColor', v)} />
                   <SwatchPicker label={t('character.skin')} colors={PALETTE.skin} value={human.skin} onChange={(v) => change('skin', v)} />
                   <StylePicker label={t('character.eyes')} options={EYE_STYLES} value={human.eyes} nameOf={(o) => t(`character.styles.eyes.${o}`)} onChange={(v) => change('eyes', v)} />
@@ -64,12 +65,13 @@ export function CharacterView() {
                   {human.sex === 'male' && (
                     <StylePicker label={t('character.beard')} options={BEARD_STYLES} value={human.beard} nameOf={(o) => t(`character.styles.beard.${o}`)} onChange={(v) => change('beard', v)} />
                   )}
-                  <StylePicker label={t('character.clothes')} options={CLOTHES_STYLES} value={human.clothes} nameOf={(o) => t(`character.styles.clothes.${o}`)} onChange={(v) => change('clothes', v)} />
+                  <StylePicker label={t('character.clothes')} options={CLOTHES_STYLES} value={human.clothes} nameOf={(o) => t(`character.styles.clothes.${o}`)} onChange={(v) => change('clothes', v)} isLocked={(o) => editor.isLocked('clothes', o)} />
                   <SwatchPicker label={t('character.clothesColor')} colors={PALETTE.clothesColor} value={human.clothesColor} onChange={(v) => change('clothesColor', v)} />
-                  <StylePicker label={t('character.hat')} options={HAT_STYLES} value={human.hat} nameOf={(o) => t(`character.styles.hat.${o}`)} onChange={(v) => change('hat', v)} />
+                  <StylePicker label={t('character.hat')} options={HAT_STYLES} value={human.hat} nameOf={(o) => t(`character.styles.hat.${o}`)} onChange={(v) => change('hat', v)} isLocked={(o) => editor.isLocked('hat', o)} />
                   {human.hat !== 'none' && <SwatchPicker label={t('character.hatColor')} colors={HAT_PALETTE} value={human.hatColor} onChange={(v) => change('hatColor', v)} />}
-                  <StylePicker label={t('character.glasses')} options={GLASSES_STYLES} value={human.glasses} nameOf={(o) => t(`character.styles.glasses.${o}`)} onChange={(v) => change('glasses', v)} />
-                  <StylePicker label={t('character.accessory')} options={ACCESSORY_STYLES} value={human.accessory} nameOf={(o) => t(`character.styles.accessory.${o}`)} onChange={(v) => change('accessory', v)} />
+                  <StylePicker label={t('character.glasses')} options={GLASSES_STYLES} value={human.glasses} nameOf={(o) => t(`character.styles.glasses.${o}`)} onChange={(v) => change('glasses', v)} isLocked={(o) => editor.isLocked('glasses', o)} />
+                  <StylePicker label={t('character.accessory')} options={ACCESSORY_STYLES} value={human.accessory} nameOf={(o) => t(`character.styles.accessory.${o}`)} onChange={(v) => change('accessory', v)} isLocked={(o) => editor.isLocked('accessory', o)} />
+                  <StylePicker label={t('character.pet')} options={PET_STYLES} value={human.pet} nameOf={(o) => t(`character.styles.pet.${o}`)} onChange={(v) => change('pet', v)} isLocked={(o) => editor.isLocked('pet', o)} />
                   {(human.accessory === 'scarf') && <SwatchPicker label={t('character.hatColor')} colors={HAT_PALETTE} value={human.hatColor} onChange={(v) => change('hatColor', v)} />}
                 </>
               )}

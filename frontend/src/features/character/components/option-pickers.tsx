@@ -6,16 +6,19 @@ interface StylePickerProps<T extends string> {
   value: T;
   nameOf: (option: T) => string;
   onChange: (option: T) => void;
+  /** Opciones de la tienda que aún no se han comprado. */
+  isLocked?: (option: T) => boolean;
 }
 
 /** Fila de botones para elegir un estilo (pelo, ojos, boca, ropa). */
-export function StylePicker<T extends string>({ label, options, value, nameOf, onChange }: StylePickerProps<T>) {
+export function StylePicker<T extends string>({ label, options, value, nameOf, onChange, isLocked }: StylePickerProps<T>) {
   return (
     <div className="mb-3">
       <p className="mb-1 text-sm text-muted">{label}</p>
       <div className="flex flex-wrap gap-1.5">
         {options.map((o) => (
-          <Button key={o} variant={o === value ? 'primary' : 'secondary'} onClick={() => onChange(o)}>
+          <Button key={o} variant={o === value ? 'primary' : 'secondary'} disabled={isLocked?.(o)} onClick={() => onChange(o)}>
+            {isLocked?.(o) ? '🔒 ' : ''}
             {nameOf(o)}
           </Button>
         ))}

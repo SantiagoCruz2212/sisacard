@@ -3,6 +3,7 @@ import { LoginView } from '@/features/auth/views/login-view';
 import { RegisterView } from '@/features/auth/views/register-view';
 import { CharacterView } from '@/features/character/views/character-view';
 import { LeaderboardView } from '@/features/leaderboard/views/leaderboard-view';
+import { ShopView } from '@/features/shop/views/shop-view';
 import { ProfileView } from '@/features/profile/views/profile-view';
 import { AuthenticatedLayout } from '@/app/routes/authenticated-layout';
 import { AuthGuard, GuestGuard } from '@/app/routes/guards';
@@ -27,6 +28,7 @@ export const router = createBrowserRouter([
           { path: '/profile', element: <ProfileView /> },
           { path: '/leaderboard', element: <LeaderboardView /> },
           { path: '/character', element: <CharacterView /> },
+          { path: '/shop', element: <ShopView /> },
           { path: '/room', element: <RoomRoute /> },
         ],
       },

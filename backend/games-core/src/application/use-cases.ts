@@ -4,6 +4,7 @@ import { GAMES, isGameId } from '../domain/games.js';
 import { Room } from '../domain/room.js';
 import { createChatMessage, DomainError, type Player, type Scheduler } from '../domain/shared.js';
 import { parseAvatar } from '../domain/avatar.js';
+import { findItem, premiumItemsIn, SHOP_ITEMS } from '../domain/shop.js';
 import type {
   AvatarDirectory,
   ChatHistory,
@@ -12,6 +13,7 @@ import type {
   RealtimeNotifier,
   RoomRepository,
   StatsRepository,
+  WalletRepository,
 } from './ports.js';
 import { lobbyView, roomView } from './views.js';
 import type { VotePublisher } from './vote-use-cases.js';
@@ -233,14 +235,43 @@ export class UpdateAvatar {
     private avatars: AvatarDirectory,
     private rooms: RoomRepository,
     private publisher: RoomPublisher,
+    private wallet: WalletRepository,
   ) {}
 
   execute(userId: string, raw: unknown) {
     const avatar = parseAvatar(raw);
+    // Los objetos de pago exigen haberlos comprado (o ya llevarlos puestos: los personajes guardados antes de la tienda siguen válidos).
+    const owned = new Set([...this.wallet.owned(userId), ...premiumItemsIn(this.avatars.get(userId)).map((i) => i.id)]);
+    const missing = premiumItemsIn(avatar).find((i) => !owned.has(i.id));
+    if (missing) throw new DomainError('Ese objeto está en la tienda: cómpralo primero');
     this.avatars.set(userId, avatar);
     const room = this.rooms.findByUserId(userId);
     if (room) this.publisher.room(room); // quienes están en la mesa lo ven al instante
     return avatar;
+  }
+}
+
+export function shopView(wallet: WalletRepository, userId: string) {
+  return { coins: wallet.balance(userId), owned: wallet.owned(userId), items: SHOP_ITEMS };
+}
+
+export class GetShop {
+  constructor(private wallet: WalletRepository) {}
+
+  execute(userId: string) {
+    return shopView(this.wallet, userId);
+  }
+}
+
+export class BuyItem {
+  constructor(private wallet: WalletRepository) {}
+
+  execute(userId: string, rawItemId: unknown) {
+    const item = findItem(rawItemId);
+    if (!item) throw new DomainError('Objeto desconocido');
+    if (this.wallet.owned(userId).includes(item.id)) throw new DomainError('Ya tienes ese objeto');
+    if (!this.wallet.purchase(userId, item.id, item.price)) throw new DomainError('No te alcanzan las monedas');
+    return shopView(this.wallet, userId);
   }
 }
 

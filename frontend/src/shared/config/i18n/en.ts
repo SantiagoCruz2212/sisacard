@@ -53,6 +53,7 @@ export const en: typeof es = {
     online: 'Online ({{count}})',
     spectate: 'Watch',
     watching: '{{count}} watching',
+    shop: 'Shop',
     character: '🧑‍🎤 Character',
   },
   room: {
@@ -192,6 +193,7 @@ export const en: typeof es = {
     hatColor: 'Hat and scarf color',
     glasses: 'Glasses',
     accessory: 'Accessory',
+    pet: 'Pet',
     save: 'Save character',
     saved: 'Saved!',
     random: 'Random',
@@ -206,6 +208,7 @@ export const en: typeof es = {
       glasses: { none: 'None', round: 'Round', square: 'Square', sunglasses: 'Sunglasses', monocle: 'Monocle' },
       beard: { none: 'None', stubble: 'Stubble', mustache: 'Mustache', goatee: 'Goatee', beard: 'Beard' },
       accessory: { none: 'None', earring: 'Earrings', necklace: 'Necklace', scarf: 'Scarf', bowtie: 'Bow tie', eyepatch: 'Eye patch', headphones: 'Headphones' },
+      pet: { none: 'None', dog: 'Dog', cat: 'Cat', rabbit: 'Rabbit', parrot: 'Parrot', dragon: 'Dragon' },
     },
   },
   privacy: {
@@ -236,6 +239,15 @@ export const en: typeof es = {
       reset: 'The cycle restarts: round 1 and totals back to zero',
       left: '{{name}} left the game',
     },
+  },
+  shop: {
+    title: 'Shop',
+    coins: '{{count}} coins',
+    help: 'You earn coins when each game ends (the same points plus a bonus for winning). Whatever you buy can be chosen on your character.',
+    owned: 'Owned',
+    notEnough: 'Not enough coins',
+    locked: 'Locked: buy it in the shop',
+    kinds: { hair: 'Hairstyles', hat: 'Hats', glasses: 'Glasses', accessory: 'Accessories', clothes: 'Clothes', pet: 'Pets' },
   },
   roulette: {
     goal: 'A {{chambers}}-chamber revolver with a single bullet. "Pull" moves to the next chamber (it gets likelier each time). "Spin" shuffles the cylinder: always 1 in {{chambers}}.',

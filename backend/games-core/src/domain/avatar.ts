@@ -9,6 +9,7 @@ export const HAT_STYLES = ['none', 'cap', 'beanie', 'tophat', 'crown', 'headband
 export const GLASSES_STYLES = ['none', 'round', 'square', 'sunglasses', 'monocle'] as const;
 export const BEARD_STYLES = ['none', 'stubble', 'mustache', 'goatee', 'beard'] as const;
 export const ACCESSORY_STYLES = ['none', 'earring', 'necklace', 'scarf', 'bowtie', 'eyepatch', 'headphones'] as const;
+export const PET_STYLES = ['none', 'dog', 'cat', 'rabbit', 'parrot', 'dragon'] as const;
 export const VEHICLES = ['apache', 'motorcycle'] as const;
 
 /** Cantidad de colores de cada paleta (los colores en sí se definen en el frontend). */
@@ -30,6 +31,8 @@ export interface HumanAvatar {
   /** Solo aplica a hombres; en mujeres siempre es 'none'. */
   beard: (typeof BEARD_STYLES)[number];
   accessory: (typeof ACCESSORY_STYLES)[number];
+  /** Mascota que acompaña al personaje (se compra en la tienda). */
+  pet: (typeof PET_STYLES)[number];
 }
 
 /** Quien elige "no binario" no personaliza un cuerpo: elige un vehículo. */
@@ -84,6 +87,7 @@ export function parseAvatar(raw: unknown): Avatar {
     glasses: oneOfOr(GLASSES_STYLES, r.glasses, 'none', 'glasses'),
     beard: sex === 'male' ? oneOfOr(BEARD_STYLES, r.beard, 'none', 'beard') : 'none',
     accessory: oneOfOr(ACCESSORY_STYLES, r.accessory, 'none', 'accessory'),
+    pet: oneOfOr(PET_STYLES, r.pet, 'none', 'pet'),
   };
 }
 
@@ -119,5 +123,6 @@ export function defaultAvatar(seed: string): Avatar {
     glasses: maybe(GLASSES_STYLES.slice(1), 'none', 25),
     beard: sex === 'male' ? maybe(BEARD_STYLES.slice(1), 'none', 35) : 'none',
     accessory: maybe(ACCESSORY_STYLES.slice(1), 'none', 25),
+    pet: 'none',
   };
 }

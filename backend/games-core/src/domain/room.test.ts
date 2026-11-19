@@ -97,7 +97,8 @@ describe('personaje', () => {
   };
 
   it('acepta un personaje humano válido', () => {
-    expect(parseAvatar(valid)).toEqual(valid);
+    expect(parseAvatar({ ...valid, pet: 'dog' })).toEqual({ ...valid, pet: 'dog' });
+    expect(parseAvatar(valid)).toEqual({ ...valid, pet: 'none' }); // los personajes guardados antes de las mascotas siguen siendo válidos
   });
 
   it('un hombre puede elegir barba; en una mujer se ignora', () => {

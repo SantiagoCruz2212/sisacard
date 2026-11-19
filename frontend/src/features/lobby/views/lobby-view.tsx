@@ -5,6 +5,7 @@ import { GameList } from '@/features/lobby/components/game-list';
 import { OnlineUsers } from '@/features/lobby/components/online-users';
 import { OpenRooms } from '@/features/lobby/components/open-rooms';
 import { useLobby } from '@/features/lobby/hooks/use-lobby';
+import { useShopState } from '@/shared/hooks/use-shop-state';
 import { Button } from '@/shared/ui/button';
 import { ChatBox } from '@/shared/ui/chat-box';
 import { Page, PageHeader, SplitLayout } from '@/shared/ui/page';
@@ -13,12 +14,16 @@ import { Page, PageHeader, SplitLayout } from '@/shared/ui/page';
 export function LobbyView({ children }: { children?: ReactNode }) {
   const { t } = useTranslation();
   const { user, logout, lobby, chat, createRoom, joinRoom, sendMessage } = useLobby();
+  const { shop } = useShopState();
 
   return (
     <Page>
       <PageHeader title={`🃏 ${t('common.appName')}`}>
         <Link to="/character" className="rounded-lg bg-line px-3.5 py-2 text-sm">
           {t('lobby.character')}
+        </Link>
+        <Link to="/shop" className="rounded-lg bg-line px-3.5 py-2 text-sm">
+          🛒 {t('lobby.shop')} · 🪙 {shop?.coins ?? 0}
         </Link>
         <Link to="/leaderboard" className="rounded-lg bg-line px-3.5 py-2 text-sm">
           {t('lobby.leaderboard')}
