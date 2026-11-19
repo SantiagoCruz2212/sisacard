@@ -39,6 +39,19 @@ Al terminar una partida cada jugador recibe puntos según su posición: el 1.º 
 - **Impostor:** el equipo ganador queda 1.º y el perdedor en la posición siguiente (con empate dentro del equipo).
 - La clasificación (`/leaderboard`) es general o por juego. La regla vive en `backend/games-core/src/domain/scoring.ts`.
 
+## Iniciar con doble clic (Windows)
+
+1. Doble clic en **`Iniciar SisaCard.bat`**. Hace todo solo: instala lo que falte (solo la primera vez), compila la página si cambió, levanta gateway + auth + juegos y abre el navegador.
+2. En la ventana aparece la dirección para las demás PCs, por ejemplo `http://192.168.40.64:3001`, y queda copiada al portapapeles para pegarla en el chat.
+3. Todo corre en **un solo puerto (3001)**: la página y el servidor.
+4. **Cerrar esa ventana apaga todo** (o `Detener SisaCard.bat`).
+
+La primera vez Windows pide permiso de administrador **una sola vez** para abrir el puerto 3001 en el firewall (la regla se llama `SisaCard-3001` y vale para cualquier tipo de red). Si se rechaza, el juego funciona en esa PC pero las demás no podrán entrar.
+
+Requisitos: Node.js 22.12 o superior (si falta, el lanzador abre la página de descarga). La salida de los servicios se guarda en `logs/sisacard.log`.
+
+Los secretos de sesión se generan una vez y se guardan en `.sisacard.env` (no se sube a GitHub); borrar ese archivo cierra todas las sesiones. Las bases de datos quedan en `backend/*/data` (tampoco se suben).
+
 ## Cómo correrlo
 
 ```powershell
