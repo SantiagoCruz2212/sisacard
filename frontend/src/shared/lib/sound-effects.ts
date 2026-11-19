@@ -60,40 +60,108 @@ export function playBell() {
   strike(c, now + 0.3, 0.6);
 }
 
-/** Disparo: estallido de ruido que se apaga rápido más un golpe grave. */
+/** Curva de saturación: aplasta los picos y da el "crack" agresivo de un disparo real. */
+function distortionCurve(amount: number) {
+  const n = 1024;
+  const curve = new Float32Array(n);
+  for (let i = 0; i < n; i++) {
+    const x = (i * 2) / n - 1;
+    curve[i] = ((1 + amount) * x) / (1 + amount * Math.abs(x));
+  }
+  return curve;
+}
+
+function noiseBuffer(c: AudioContext, seconds: number, decayPower: number) {
+  const length = Math.floor(c.sampleRate * seconds);
+  const buffer = c.createBuffer(1, length, c.sampleRate);
+  const data = buffer.getChannelData(0);
+  for (let i = 0; i < length; i++) data[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / length, decayPower);
+  return buffer;
+}
+
+/**
+ * Disparo realista en capas: chasquido seco y saturado, cuerpo medio, estampido grave,
+ * y el eco de la sala. Todo pasa por un compresor para que golpee fuerte sin saturar los altavoces.
+ */
 export function playGunshot() {
   const c = audio();
   if (!c) return;
   if (c.state === 'suspended') void c.resume();
   const t = c.currentTime;
 
-  const length = Math.floor(c.sampleRate * 0.4);
-  const buffer = c.createBuffer(1, length, c.sampleRate);
-  const data = buffer.getChannelData(0);
-  for (let i = 0; i < length; i++) data[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / length, 3);
-  const noise = c.createBufferSource();
-  noise.buffer = buffer;
-  const filter = c.createBiquadFilter();
-  filter.type = 'lowpass';
-  filter.frequency.setValueAtTime(5000, t);
-  filter.frequency.exponentialRampToValueAtTime(300, t + 0.3);
-  const noiseGain = c.createGain();
-  noiseGain.gain.setValueAtTime(0.55, t);
-  noiseGain.gain.exponentialRampToValueAtTime(0.001, t + 0.35);
-  noise.connect(filter);
-  filter.connect(noiseGain);
-  noiseGain.connect(c.destination);
-  noise.start(t);
+  const out = c.createDynamicsCompressor();
+  out.threshold.value = -18;
+  out.knee.value = 6;
+  out.ratio.value = 12;
+  out.attack.value = 0.001;
+  out.release.value = 0.15;
+  const master = c.createGain();
+  master.gain.value = 1.3;
+  out.connect(master);
+  master.connect(c.destination);
 
-  const thump = c.createOscillator();
-  thump.type = 'sine';
-  thump.frequency.setValueAtTime(160, t);
-  thump.frequency.exponentialRampToValueAtTime(40, t + 0.18);
-  const thumpGain = c.createGain();
-  thumpGain.gain.setValueAtTime(0.6, t);
-  thumpGain.gain.exponentialRampToValueAtTime(0.001, t + 0.22);
-  thump.connect(thumpGain);
-  thumpGain.connect(c.destination);
-  thump.start(t);
-  thump.stop(t + 0.25);
+  // Eco de la sala: impulso de ruido que se apaga en ~1,4 s.
+  const room = c.createConvolver();
+  room.buffer = noiseBuffer(c, 1.4, 2.5);
+  const roomGain = c.createGain();
+  roomGain.gain.value = 0.35;
+  room.connect(roomGain);
+  roomGain.connect(out);
+
+  const burst = (seconds: number, decay: number, filterType: BiquadFilterType, freq: number, gain: number, drive: number, wet: number) => {
+    const src = c.createBufferSource();
+    src.buffer = noiseBuffer(c, seconds, decay);
+    const f = c.createBiquadFilter();
+    f.type = filterType;
+    f.frequency.value = freq;
+    const shaper = c.createWaveShaper();
+    shaper.curve = distortionCurve(drive);
+    const g = c.createGain();
+    g.gain.setValueAtTime(gain, t);
+    g.gain.exponentialRampToValueAtTime(0.001, t + seconds);
+    src.connect(f);
+    f.connect(shaper);
+    shaper.connect(g);
+    g.connect(out);
+    if (wet > 0) {
+      const w = c.createGain();
+      w.gain.value = wet;
+      g.connect(w);
+      w.connect(room);
+    }
+    src.start(t);
+  };
+
+  burst(0.05, 1.2, 'highpass', 1800, 1, 80, 0.5); // crack: lo más seco y agudo
+  burst(0.18, 2, 'bandpass', 1400, 0.9, 40, 0.6); // cuerpo del estampido
+  burst(0.7, 3, 'lowpass', 700, 0.7, 10, 1); // rugido que se aleja
+
+  // Estampido grave: sube de golpe y cae.
+  const boom = c.createOscillator();
+  boom.type = 'sine';
+  boom.frequency.setValueAtTime(150, t);
+  boom.frequency.exponentialRampToValueAtTime(32, t + 0.3);
+  const boomShaper = c.createWaveShaper();
+  boomShaper.curve = distortionCurve(6);
+  const boomGain = c.createGain();
+  boomGain.gain.setValueAtTime(1, t);
+  boomGain.gain.exponentialRampToValueAtTime(0.001, t + 0.4);
+  boom.connect(boomShaper);
+  boomShaper.connect(boomGain);
+  boomGain.connect(out);
+  boom.start(t);
+  boom.stop(t + 0.45);
+
+  // Zumbido agudo breve (el "ping" del oído tras el disparo).
+  const ring = c.createOscillator();
+  ring.type = 'sine';
+  ring.frequency.value = 3200;
+  const ringGain = c.createGain();
+  ringGain.gain.setValueAtTime(0.0001, t + 0.05);
+  ringGain.gain.exponentialRampToValueAtTime(0.06, t + 0.08);
+  ringGain.gain.exponentialRampToValueAtTime(0.0001, t + 0.9);
+  ring.connect(ringGain);
+  ringGain.connect(out);
+  ring.start(t + 0.05);
+  ring.stop(t + 0.95);
 }
