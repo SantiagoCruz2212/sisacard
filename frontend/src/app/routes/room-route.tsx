@@ -1,6 +1,8 @@
+import { AmongUsView } from '@/features/amongus/views/amongus-view';
 import { BlackjackView } from '@/features/blackjack/views/blackjack-view';
 import { ImpostorView } from '@/features/impostor/views/impostor-view';
 import { RoomView } from '@/features/room/views/room-view';
+import { RouletteView } from '@/features/roulette/views/roulette-view';
 import { UnoView } from '@/features/uno/views/uno-view';
 import { useCurrentRoom } from '@/shared/hooks/use-realtime';
 
@@ -15,6 +17,10 @@ export function RoomRoute() {
         <UnoView />
       ) : room?.play?.type === 'blackjack' ? (
         <BlackjackView />
+      ) : room?.play?.type === 'roulette' ? (
+        <RouletteView />
+      ) : room?.play?.type === 'amongus' ? (
+        <AmongUsView />
       ) : null}
     </RoomView>
   );

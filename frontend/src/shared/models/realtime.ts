@@ -18,7 +18,7 @@ export interface LobbyState {
   rooms: { id: string; game: GameId; host: string; players: number; spectators: number; max: number; status: 'waiting' | 'playing' }[];
 }
 
-export type GameId = 'impostor' | 'uno' | 'blackjack';
+export type GameId = 'impostor' | 'uno' | 'blackjack' | 'roulette' | 'amongus';
 
 export interface PlaceResult {
   userId: string;
@@ -138,6 +138,81 @@ export interface BlackjackView {
   results: PlaceResult[] | null;
 }
 
+export interface RouletteLogEntry {
+  kind: 'click' | 'bang' | 'spin' | 'left' | 'timeout';
+  userId: string;
+}
+
+export interface RouletteView {
+  type: 'roulette';
+  phase: 'playing' | 'between' | 'ended';
+  chambers: number;
+  position: number;
+  deadline: number;
+  now: number;
+  players: { id: string; username: string; out: boolean; left: boolean; connected: boolean; survived: number }[];
+  turnId: string | null;
+  canAct: boolean;
+  log: RouletteLogEntry[];
+  results: PlaceResult[] | null;
+}
+
+export type AmongRoomId = 'cafeteria' | 'office' | 'servers' | 'storage' | 'meeting' | 'kitchen';
+
+export interface AmongUsView {
+  type: 'amongus';
+  phase: 'playing' | 'meeting' | 'result' | 'ended';
+  deadline: number;
+  now: number;
+  map: {
+    width: number;
+    height: number;
+    vision: number;
+    taskRange: number;
+    rooms: { id: AmongRoomId; x: number; y: number; w: number; h: number }[];
+  };
+  me: {
+    role: 'crew' | 'impostor';
+    alive: boolean;
+    x: number;
+    y: number;
+    tasks: { id: AmongRoomId; done: boolean; x: number; y: number }[];
+    /** Avance 0..1 de la tarea en curso, o null. */
+    working: number | null;
+    canTask: boolean;
+    canKill: boolean;
+    canReport: boolean;
+    /** ms que faltan para poder eliminar de nuevo. */
+    killIn: number;
+  } | null;
+  role: 'crew' | 'impostor' | 'spectator';
+  players: {
+    id: string;
+    username: string;
+    x: number;
+    y: number;
+    alive: boolean;
+    connected: boolean;
+    voted: boolean;
+    working: boolean;
+    impostor?: boolean;
+  }[];
+  bodies: { id: string; x: number; y: number }[];
+  tasksDone: number;
+  tasksTotal: number;
+  /** undefined = no ha votado, null = saltó el voto */
+  myVote?: string | null;
+  meeting: {
+    ejected: string | null;
+    wasImpostor: boolean;
+    tally: Record<string, number>;
+    skips: number;
+    votes: { from: string; to: string | null }[];
+  } | null;
+  winner: 'crew' | 'impostor' | null;
+  results: PlaceResult[] | null;
+}
+
 export interface LeaderboardEntry {
   userId: string;
   username: string;
@@ -157,7 +232,7 @@ export interface RoomState {
   /** Quienes miran con la partida en curso. */
   spectators: (AppUser & { connected: boolean; avatar: Avatar })[];
   chat: ChatMessage[];
-  play: ImpostorView | UnoView | BlackjackView | null;
+  play: ImpostorView | UnoView | BlackjackView | RouletteView | AmongUsView | null;
 }
 
 export type PlayerStats = Record<string, Record<string, number>>;

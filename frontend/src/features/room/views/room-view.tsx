@@ -29,7 +29,7 @@ export function RoomView({ children }: { children?: ReactNode }) {
       <SplitLayout
         main={
           <>
-            <TableScene room={room} meId={user?.id ?? ''} />
+            {!(room.game === 'amongus' && room.status === 'playing') && <TableScene room={room} meId={user?.id ?? ''} />}
             {isSpectator && <p className="rounded-lg bg-line px-3 py-2 text-sm">{t('room.spectating')}</p>}
             {children ?? <WaitingRoom room={room} isHost={isHost} onStart={start} />}
             {gameEnded &&

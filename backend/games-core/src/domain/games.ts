@@ -1,6 +1,8 @@
 import type { GameDefinition, GameId } from './game.js';
 import { ImpostorGame, scaleTimings } from './impostor/impostor-game.js';
 import { BlackjackGame } from './blackjack/blackjack-game.js';
+import { AmongUsGame } from './amongus/amongus-game.js';
+import { RouletteGame } from './roulette/roulette-game.js';
 import { UnoGame } from './uno/uno-game.js';
 
 /** Catálogo de juegos. Agregar un juego = implementar GameMatch y registrarlo aquí. */
@@ -37,6 +39,18 @@ export const GAMES: Record<GameId, GameDefinition> = {
     minPlayers: 2,
     maxPlayers: 8,
     create: (players, ctx) => new BlackjackGame(players, ctx),
+  },
+  roulette: {
+    id: 'roulette',
+    minPlayers: 2,
+    maxPlayers: 8,
+    create: (players, ctx) => new RouletteGame(players, ctx),
+  },
+  amongus: {
+    id: 'amongus',
+    minPlayers: 4,
+    maxPlayers: 10,
+    create: (players, ctx) => new AmongUsGame(players, ctx),
   },
 };
 

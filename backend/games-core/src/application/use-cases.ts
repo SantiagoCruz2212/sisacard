@@ -1,4 +1,5 @@
 import { randomBytes } from 'node:crypto';
+import type { GameAction } from '../domain/game.js';
 import { GAMES, isGameId } from '../domain/games.js';
 import { Room } from '../domain/room.js';
 import { createChatMessage, DomainError, type Player, type Scheduler } from '../domain/shared.js';
@@ -175,7 +176,7 @@ export class PerformGameAction {
     private publisher: RoomPublisher,
   ) {}
 
-  execute(userId: string, action: { type?: unknown; text?: unknown; target?: unknown }) {
+  execute(userId: string, action: GameAction) {
     const room = requireRoom(this.rooms, userId);
     if (!room.match) throw new DomainError('No hay partida en curso');
     room.match.action(userId, action);

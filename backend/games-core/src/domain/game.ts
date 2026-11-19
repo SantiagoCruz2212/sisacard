@@ -1,6 +1,6 @@
 import type { Player, Scheduler } from './shared.js';
 
-export type GameId = 'impostor' | 'uno' | 'blackjack';
+export type GameId = 'impostor' | 'uno' | 'blackjack' | 'roulette' | 'amongus';
 
 /** Posición final de un jugador. Los empates comparten posición (1, 1, 3…). */
 export interface PlayerResult {
@@ -21,6 +21,9 @@ export interface GameAction {
   cardId?: unknown;
   color?: unknown;
   uno?: unknown;
+  /** Dirección de movimiento (-1..1) para los juegos en tiempo real. */
+  dx?: unknown;
+  dy?: unknown;
 }
 
 export interface MatchContext {

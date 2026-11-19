@@ -9,6 +9,8 @@ export function GameList({ onCreateRoom }: { onCreateRoom: (game: GameId) => voi
     { id: 'impostor', name: t('lobby.impostorName'), description: t('lobby.impostorDesc') },
     { id: 'uno', name: t('lobby.unoName'), description: t('lobby.unoDesc') },
     { id: 'blackjack', name: t('lobby.blackjackName'), description: t('lobby.blackjackDesc') },
+    { id: 'roulette', name: t('lobby.rouletteName'), description: t('lobby.rouletteDesc') },
+    { id: 'amongus', name: t('lobby.amongusName'), description: t('lobby.amongusDesc') },
   ] as const;
   return (
     <Card>

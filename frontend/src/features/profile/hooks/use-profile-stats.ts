@@ -14,11 +14,12 @@ export function useProfileStats() {
   const impostor = query.data?.impostor ?? {};
   const uno = query.data?.uno ?? {};
   const blackjack = query.data?.blackjack ?? {};
+  const extraPoints = (query.data?.roulette?.points ?? 0) + (query.data?.amongus?.points ?? 0);
 
   return {
     user,
     isLoading: query.isLoading,
-    totalPoints: (impostor.points ?? 0) + (uno.points ?? 0) + (blackjack.points ?? 0),
+    totalPoints: (impostor.points ?? 0) + (uno.points ?? 0) + (blackjack.points ?? 0) + extraPoints,
     impostor: {
       hasPlayed: (impostor.played ?? 0) > 0,
       played: impostor.played ?? 0,
