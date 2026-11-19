@@ -3,12 +3,12 @@ export const SEXES = ['male', 'female', 'nonbinary'] as const;
 export const HAIR_STYLES = ['short', 'long', 'spiky', 'bob', 'bun', 'bald', 'ponytail', 'afro', 'mohawk', 'curly', 'buzz', 'pigtails', 'sidepart'] as const;
 export const EYE_STYLES = ['normal', 'sleepy', 'angry', 'happy', 'wink', 'surprised'] as const;
 export const MOUTH_STYLES = ['smile', 'neutral', 'grin', 'open', 'frown', 'smirk', 'tongue'] as const;
-export const CLOTHES_STYLES = ['tshirt', 'vest', 'hoodie', 'suit', 'dress', 'armor', 'sweater'] as const;
-export const HAT_STYLES = ['none', 'cap', 'beanie', 'tophat', 'crown', 'headband'] as const;
-export const GLASSES_STYLES = ['none', 'round', 'square', 'sunglasses', 'monocle'] as const;
+export const CLOTHES_STYLES = ['tshirt', 'vest', 'hoodie', 'suit', 'dress', 'armor', 'sweater', 'robe'] as const;
+export const HAT_STYLES = ['none', 'cap', 'beanie', 'tophat', 'crown', 'headband', 'wizard', 'pirate', 'viking'] as const;
+export const GLASSES_STYLES = ['none', 'round', 'square', 'sunglasses', 'monocle', 'visor'] as const;
 export const BEARD_STYLES = ['none', 'stubble', 'mustache', 'goatee', 'beard'] as const;
-export const ACCESSORY_STYLES = ['none', 'earring', 'necklace', 'scarf', 'bowtie', 'eyepatch', 'headphones'] as const;
-export const PET_STYLES = ['none', 'dog', 'cat', 'rabbit', 'parrot', 'dragon'] as const;
+export const ACCESSORY_STYLES = ['none', 'earring', 'necklace', 'scarf', 'bowtie', 'eyepatch', 'headphones', 'medal', 'halo'] as const;
+export const PET_STYLES = ['none', 'dog', 'cat', 'rabbit', 'parrot', 'dragon', 'panda', 'owl', 'phoenix'] as const;
 export const VEHICLES = ['apache', 'motorcycle'] as const;
 
 export type Sex = (typeof SEXES)[number];

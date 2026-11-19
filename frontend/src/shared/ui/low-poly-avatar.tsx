@@ -197,6 +197,38 @@ function Hat({ style, c }: { style: HumanAvatar['hat']; c: Colors }) {
           <Poly p={octagon(66, 22, 2)} fill="#2d5fa8" />
         </>
       );
+    case 'wizard':
+      return (
+        <>
+          <Poly p="10,32 90,32 82,40 18,40" fill={dark} />
+          <Poly p="26,32 40,0 50,-36 62,-4 74,32" fill={c.hat} />
+          <Poly p="50,-36 62,-4 74,32 50,32" fill={dark} opacity={0.5} />
+          <Poly p="27,26 73,26 74,32 26,32" fill={light} />
+          <Poly p="46,4 50,-4 54,4 62,6 56,11 58,19 50,15 42,19 44,11 38,6" fill="#facc15" />
+        </>
+      );
+    case 'pirate':
+      return (
+        <>
+          <Poly p="8,32 50,0 92,32 70,38 30,38" fill="#1f2937" />
+          <Poly p="8,32 50,0 92,32 88,32 50,5 12,32" fill="#d4a020" />
+          <Poly p="30,38 70,38 60,30 40,30" fill="#111827" />
+          <Poly p={octagon(50, 20, 4.2)} fill="#f3f4f6" />
+          <Poly p="46,22 48,22 48,25 46,25" fill="#111" />
+          <Poly p="52,22 54,22 54,25 52,25" fill="#111" />
+        </>
+      );
+    case 'viking':
+      return (
+        <>
+          <Poly p="24,22 8,18 2,-8 14,6 27,12" fill="#f5e6c8" />
+          <Poly p="76,22 92,18 98,-8 86,6 73,12" fill="#f5e6c8" />
+          <Poly p="22,34 24,14 38,2 62,2 76,14 78,34 66,28 34,28" fill="#9aa3ad" />
+          <Poly p="38,2 62,2 56,14 44,14" fill="#fff" opacity={0.2} />
+          <Poly p="21,28 79,28 79,35 21,35" fill="#6b7280" />
+          <Poly p="47,28 53,28 53,46 47,46" fill="#7d8791" />
+        </>
+      );
     case 'headband':
       return (
         <>
@@ -242,6 +274,16 @@ function Glasses({ style }: { style: HumanAvatar['glasses'] }) {
           <polyline points="48,41 52,41" {...stroke} />
           <Poly p="31,41 38,41 34,47 31,47" fill="#fff" opacity={0.25} />
           <Poly p="56,41 63,41 59,47 56,47" fill="#fff" opacity={0.25} />
+        </>
+      );
+    case 'visor':
+      return (
+        <>
+          <Poly p="24,38 76,38 72,52 28,52" fill="#22d3ee" opacity={0.55} />
+          <polygon points="24,38 76,38 72,52 28,52" stroke="#0e7490" strokeWidth="1.6" fill="none" />
+          <Poly p="30,40 44,40 38,50 30,50" fill="#fff" opacity={0.3} />
+          <polyline points="24,40 19,43" stroke="#0e7490" strokeWidth="1.6" fill="none" />
+          <polyline points="76,40 81,43" stroke="#0e7490" strokeWidth="1.6" fill="none" />
         </>
       );
     case 'monocle':
@@ -385,6 +427,18 @@ function Clothes({ style, c }: { style: HumanAvatar['clothes']; c: Colors }) {
   );
 
   switch (style) {
+    case 'robe':
+      return (
+        <>
+          {torso(cloth)}
+          <Poly p="38,82 62,82 50,114" fill={neckline} />
+          <Poly p="38,82 50,114 45,116 33,86" fill="#d4a020" />
+          <Poly p="62,82 50,114 55,116 67,86" fill="#d4a020" />
+          <Poly p="12,102 88,102 88,108 12,108" fill={shade(cloth, -0.35)} />
+          <Poly p="8,120 12,96 22,104 18,120" fill={shade(cloth, -0.2)} />
+          <Poly p="92,120 88,96 78,104 82,120" fill={shade(cloth, 0.05)} />
+        </>
+      );
     case 'vest':
       return (
         <>
@@ -481,6 +535,15 @@ function NeckWear({ style, c }: { style: HumanAvatar['accessory']; c: Colors }) 
           <Poly p="56,100 68,98 68,104 56,106" fill={shade(c.hat, -0.2)} opacity={0.6} />
         </>
       );
+    case 'medal':
+      return (
+        <>
+          <Poly p="40,82 46,82 53,98 47,98" fill="#c0392b" />
+          <Poly p="60,82 54,82 47,98 53,98" fill="#2d5fa8" />
+          <Poly p={octagon(50, 104, 6)} fill="#f2c230" />
+          <Poly p={octagon(50, 104, 3.2)} fill="#d49a10" />
+        </>
+      );
     case 'bowtie':
       return (
         <>
@@ -504,6 +567,13 @@ function FaceWear({ style }: { style: HumanAvatar['accessory'] }) {
           <Poly p="80,56 77,56 78.5,62" fill="#f2c230" />
           <Poly p={octagon(21.5, 63.5, 1.8)} fill="#e0407a" />
           <Poly p={octagon(78.5, 63.5, 1.8)} fill="#e0407a" />
+        </>
+      );
+    case 'halo':
+      return (
+        <>
+          <polygon points="26,-6 36,-11 50,-12 64,-11 74,-6 64,-2 50,-1 36,-2" stroke="#facc15" strokeWidth="3" fill="none" />
+          <polygon points="26,-6 36,-11 50,-12 64,-11 74,-6 64,-2 50,-1 36,-2" stroke="#fff7b0" strokeWidth="1" fill="none" opacity={0.8} />
         </>
       );
     case 'eyepatch':
@@ -602,6 +672,51 @@ function Pet({ kind }: { kind: HumanAvatar['pet'] }) {
           <Poly p="7,13 9,13 9,15 7,15" fill="#111" />
           <Poly p="19,14 22,14 22,16 19,16" fill="#14532d" />
           <Poly p="14,24 20,22 18,29" fill="#f97316" opacity={0.9} />
+        </>
+      );
+      break;
+    case 'panda':
+      body = (
+        <>
+          <Poly p={octagon(4, 6, 5)} fill="#111" />
+          <Poly p={octagon(19, 6, 5)} fill="#111" />
+          <Poly p="3,6 19,6 23,16 18,27 5,27 0,16" fill="#f8fafc" />
+          <Poly p="3,6 11,6 9,16 0,16" fill="#000" opacity={0.06} />
+          <Poly p="3,12 9,12 9,19 4,19" fill="#111" />
+          <Poly p="14,12 20,12 19,19 14,19" fill="#111" />
+          <Poly p="5,14 7,14 7,16 5,16" fill="#fff" />
+          <Poly p="15,14 17,14 17,16 15,16" fill="#fff" />
+          <Poly p="9,19 14,19 11.5,22" fill="#111" />
+        </>
+      );
+      break;
+    case 'owl':
+      body = (
+        <>
+          <Poly p="4,2 6,-5 10,2" fill="#6b4423" />
+          <Poly p="14,2 18,-5 20,2" fill="#6b4423" />
+          <Poly p="4,2 20,2 24,14 20,28 6,28 2,14" fill="#8b5e34" />
+          <Poly p="0,14 4,14 6,27 2,24" fill="#5c3d1e" />
+          <Poly p="5,8 19,8 19,21 5,21" fill="#e8d3a8" />
+          <Poly p={octagon(9, 13, 3.6)} fill="#facc15" />
+          <Poly p={octagon(15, 13, 3.6)} fill="#facc15" />
+          <Poly p="8,12 10,12 10,14 8,14" fill="#111" />
+          <Poly p="14,12 16,12 16,14 14,14" fill="#111" />
+          <Poly p="10,16 14,16 12,21" fill="#f97316" />
+        </>
+      );
+      break;
+    case 'phoenix':
+      body = (
+        <>
+          <Poly p="10,6 12,-6 15,3 18,-8 20,6" fill="#facc15" />
+          <Poly p="16,12 31,0 27,21" fill="#f97316" />
+          <Poly p="16,12 31,0 24,10" fill="#fde047" opacity={0.7} />
+          <Poly p="8,6 20,6 24,16 18,28 10,28 4,16" fill="#ef4444" />
+          <Poly p="8,6 14,6 12,16 4,16" fill="#fff" opacity={0.16} />
+          <Poly p="10,28 6,37 12,32 14,40 17,28" fill="#fde047" />
+          <Poly p="22,10 29,13 22,15" fill="#facc15" />
+          <Poly p="13,9 15,9 15,11 13,11" fill="#111" />
         </>
       );
       break;

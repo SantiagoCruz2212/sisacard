@@ -5,6 +5,7 @@ import { Server } from 'socket.io';
 import { DEV_GATEWAY_SECRET } from '@sisacard/contracts';
 import { RecordGameStats } from './application/record-game-stats.js';
 import {
+  BuyBattlePass,
   BuyItem,
   CreateRoom,
   GetAvatar,
@@ -97,6 +98,7 @@ const httpApp = createHttpApp({
   updateAvatar: new UpdateAvatar(avatars, rooms, publisher, wallet),
   getShop: new GetShop(wallet),
   buyItem: new BuyItem(wallet),
+  buyPass: new BuyBattlePass(wallet),
   gatewaySecret,
 });
 httpServer.on('request', (req, res) => {

@@ -9,10 +9,23 @@ export interface ShopItem {
   price: number;
 }
 
+export interface PassTier {
+  tier: number;
+  kind: ShopKind;
+  value: string;
+  itemId: string;
+  unlocked: boolean;
+}
+
 export interface ShopState {
   coins: number;
+  /** Objetos que ya se pueden usar (comprados o desbloqueados con el pase). */
   owned: string[];
   items: ShopItem[];
+  xp: number;
+  level: number;
+  xpPerLevel: number;
+  pass: { price: number; owned: boolean; tiers: PassTier[] };
 }
 
 export const SHOP_KINDS: ShopKind[] = ['hair', 'hat', 'glasses', 'accessory', 'clothes', 'pet'];

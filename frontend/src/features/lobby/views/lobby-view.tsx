@@ -23,7 +23,7 @@ export function LobbyView({ children }: { children?: ReactNode }) {
           {t('lobby.character')}
         </Link>
         <Link to="/shop" className="rounded-lg bg-line px-3.5 py-2 text-sm">
-          🛒 {t('lobby.shop')} · 🪙 {shop?.coins ?? 0}
+          🛒 {t('lobby.shop')} · Nv. {shop?.level ?? 0} · 🪙 {shop?.coins ?? 0}
         </Link>
         <Link to="/leaderboard" className="rounded-lg bg-line px-3.5 py-2 text-sm">
           {t('lobby.leaderboard')}

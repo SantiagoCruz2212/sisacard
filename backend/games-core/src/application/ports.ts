@@ -86,6 +86,8 @@ export interface WalletRepository {
   balance(userId: string): number;
   credit(userId: string, amount: number): void;
   owned(userId: string): string[];
+  xp(userId: string): number;
+  addXp(userId: string, amount: number): void;
   /** Descuenta el precio y registra la compra de forma atómica. Devuelve false si no alcanzan las monedas. */
   purchase(userId: string, itemId: string, price: number): boolean;
 }

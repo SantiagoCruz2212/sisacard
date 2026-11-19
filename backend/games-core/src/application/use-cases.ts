@@ -5,6 +5,7 @@ import { Room } from '../domain/room.js';
 import { createChatMessage, DomainError, type Player, type Scheduler } from '../domain/shared.js';
 import { parseAvatar } from '../domain/avatar.js';
 import { findItem, premiumItemsIn, SHOP_ITEMS } from '../domain/shop.js';
+import { levelOf, PASS_ID, PASS_PRICE, PASS_TIERS, passItemId, unlockedPassItems, XP_PER_LEVEL } from '../domain/battle-pass.js';
 import type {
   AvatarDirectory,
   ChatHistory,
@@ -241,7 +242,7 @@ export class UpdateAvatar {
   execute(userId: string, raw: unknown) {
     const avatar = parseAvatar(raw);
     // Los objetos de pago exigen haberlos comprado (o ya llevarlos puestos: los personajes guardados antes de la tienda siguen válidos).
-    const owned = new Set([...this.wallet.owned(userId), ...premiumItemsIn(this.avatars.get(userId)).map((i) => i.id)]);
+    const owned = new Set([...usableItems(this.wallet, userId), ...premiumItemsIn(this.avatars.get(userId)).map((i) => i.id)]);
     const missing = premiumItemsIn(avatar).find((i) => !owned.has(i.id));
     if (missing) throw new DomainError('Ese objeto está en la tienda: cómpralo primero');
     this.avatars.set(userId, avatar);
@@ -251,8 +252,30 @@ export class UpdateAvatar {
   }
 }
 
+/** Objetos que el jugador puede llevar: lo comprado más los escalones del pase ya desbloqueados. */
+function usableItems(wallet: WalletRepository, userId: string) {
+  const bought = wallet.owned(userId);
+  return [...bought, ...unlockedPassItems(bought.includes(PASS_ID), wallet.xp(userId))];
+}
+
 export function shopView(wallet: WalletRepository, userId: string) {
-  return { coins: wallet.balance(userId), owned: wallet.owned(userId), items: SHOP_ITEMS };
+  const bought = wallet.owned(userId);
+  const xp = wallet.xp(userId);
+  const level = levelOf(xp);
+  const hasPass = bought.includes(PASS_ID);
+  return {
+    coins: wallet.balance(userId),
+    owned: usableItems(wallet, userId),
+    items: SHOP_ITEMS,
+    xp,
+    level,
+    xpPerLevel: XP_PER_LEVEL,
+    pass: {
+      price: PASS_PRICE,
+      owned: hasPass,
+      tiers: PASS_TIERS.map((t) => ({ ...t, itemId: passItemId(t), unlocked: hasPass && t.tier <= level })),
+    },
+  };
 }
 
 export class GetShop {
@@ -269,7 +292,7 @@ export class BuyItem {
   execute(userId: string, rawItemId: unknown) {
     const item = findItem(rawItemId);
     if (!item) throw new DomainError('Objeto desconocido');
-    if (this.wallet.owned(userId).includes(item.id)) throw new DomainError('Ya tienes ese objeto');
+    if (usableItems(this.wallet, userId).includes(item.id)) throw new DomainError('Ya tienes ese objeto');
     if (!this.wallet.purchase(userId, item.id, item.price)) throw new DomainError('No te alcanzan las monedas');
     return shopView(this.wallet, userId);
   }
@@ -343,5 +366,15 @@ export class HandlePresence {
         }),
       );
     }
+  }
+}
+
+export class BuyBattlePass {
+  constructor(private wallet: WalletRepository) {}
+
+  execute(userId: string) {
+    if (this.wallet.owned(userId).includes(PASS_ID)) throw new DomainError('Ya tienes el pase de batalla');
+    if (!this.wallet.purchase(userId, PASS_ID, PASS_PRICE)) throw new DomainError('No te alcanzan las monedas');
+    return shopView(this.wallet, userId);
   }
 }

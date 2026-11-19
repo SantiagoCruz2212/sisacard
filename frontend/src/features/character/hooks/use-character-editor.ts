@@ -38,7 +38,8 @@ export function useCharacterEditor() {
   /** Un objeto de la tienda está bloqueado si no se compró (lo que el personaje guardado ya lleva puesto sigue permitido). */
   const isLocked = (kind: ShopKind, value: string) => {
     const id = itemId(kind, value);
-    if (!shop?.items.some((i) => i.id === id) || shop.owned.includes(id)) return false;
+    const gated = shop?.items.some((i) => i.id === id) || shop?.pass.tiers.some((t) => t.itemId === id);
+    if (!shop || !gated || shop.owned.includes(id)) return false;
     const saved = query.data;
     return !(saved && saved.sex !== 'nonbinary' && saved[kind] === value);
   };

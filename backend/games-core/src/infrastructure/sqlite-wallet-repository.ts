@@ -15,6 +15,10 @@ export class SqliteWalletRepository implements WalletRepository {
         user_id TEXT PRIMARY KEY,
         coins INTEGER NOT NULL DEFAULT 0
       );
+      CREATE TABLE IF NOT EXISTS xp (
+        user_id TEXT PRIMARY KEY,
+        xp INTEGER NOT NULL DEFAULT 0
+      );
       CREATE TABLE IF NOT EXISTS purchases (
         user_id TEXT NOT NULL,
         item_id TEXT NOT NULL,
@@ -33,6 +37,18 @@ export class SqliteWalletRepository implements WalletRepository {
     if (amount <= 0) return;
     this.db
       .prepare('INSERT INTO wallets (user_id, coins) VALUES (?, ?) ON CONFLICT(user_id) DO UPDATE SET coins = coins + excluded.coins')
+      .run(userId, amount);
+  }
+
+  xp(userId: string) {
+    const row = this.db.prepare('SELECT xp FROM xp WHERE user_id = ?').get(userId) as { xp: number } | undefined;
+    return row?.xp ?? 0;
+  }
+
+  addXp(userId: string, amount: number) {
+    if (amount <= 0) return;
+    this.db
+      .prepare('INSERT INTO xp (user_id, xp) VALUES (?, ?) ON CONFLICT(user_id) DO UPDATE SET xp = xp + excluded.xp')
       .run(userId, amount);
   }
 

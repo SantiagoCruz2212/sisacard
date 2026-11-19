@@ -1,5 +1,6 @@
 import type { GameFinished } from '../domain/events.js';
 import { pointsForPlace } from '../domain/scoring.js';
+import { xpForResult } from '../domain/battle-pass.js';
 import { WIN_BONUS_COINS } from '../domain/shop.js';
 import type { StatsRepository, WalletRepository } from './ports.js';
 
@@ -23,6 +24,7 @@ export class RecordGameStats {
       const points = pointsForPlace(r.place, total);
       await this.stats.increment(r.userId, event.game, 'points', points);
       // Monedas: los mismos puntos de la partida y un extra por ganar.
+      this.wallet.addXp(r.userId, xpForResult(r.place, total, points));
       this.wallet.credit(r.userId, points + (r.place === 1 && total > 1 ? WIN_BONUS_COINS : 0));
     }
   }

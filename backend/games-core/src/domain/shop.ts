@@ -1,4 +1,5 @@
 import type { Avatar } from './avatar.js';
+import { PASS_ITEMS } from './battle-pass.js';
 
 export type ShopKind = 'hair' | 'hat' | 'glasses' | 'accessory' | 'clothes' | 'pet';
 
@@ -55,5 +56,5 @@ export function premiumItemsIn(avatar: Avatar): ShopItem[] {
     itemId('clothes', avatar.clothes),
     itemId('pet', avatar.pet),
   ];
-  return SHOP_ITEMS.filter((i) => used.includes(i.id));
+  return [...SHOP_ITEMS, ...PASS_ITEMS].filter((i) => used.includes(i.id));
 }
