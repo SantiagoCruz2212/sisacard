@@ -208,7 +208,7 @@ export const en: typeof es = {
       glasses: { none: 'None', round: 'Round', square: 'Square', sunglasses: 'Sunglasses', monocle: 'Monocle', visor: 'Visor' },
       beard: { none: 'None', stubble: 'Stubble', mustache: 'Mustache', goatee: 'Goatee', beard: 'Beard' },
       accessory: { none: 'None', earring: 'Earrings', necklace: 'Necklace', scarf: 'Scarf', bowtie: 'Bow tie', eyepatch: 'Eye patch', headphones: 'Headphones', medal: 'Medal', halo: 'Halo' },
-      pet: { none: 'None', dog: 'Dog', cat: 'Cat', rabbit: 'Rabbit', parrot: 'Parrot', dragon: 'Dragon', panda: 'Panda', owl: 'Owl', phoenix: 'Phoenix' },
+      pet: { none: 'None', dog: 'Dog', cat: 'Cat', rabbit: 'Rabbit', parrot: 'Parrot', dragon: 'Dragon', panda: 'Panda', owl: 'Owl', phoenix: 'Phoenix', bear: 'Malparido' },
     },
   },
   privacy: {

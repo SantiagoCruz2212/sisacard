@@ -206,7 +206,7 @@ export const es = {
       glasses: { none: 'Ninguno', round: 'Redondos', square: 'Cuadrados', sunglasses: 'De sol', monocle: 'Monóculo', visor: 'Visor' },
       beard: { none: 'Ninguna', stubble: 'Barba corta', mustache: 'Bigote', goatee: 'Candado', beard: 'Barba' },
       accessory: { none: 'Ninguno', earring: 'Aretes', necklace: 'Collar', scarf: 'Bufanda', bowtie: 'Corbatín', eyepatch: 'Parche', headphones: 'Audífonos', medal: 'Medalla', halo: 'Aureola' },
-      pet: { none: 'Ninguna', dog: 'Perro', cat: 'Gato', rabbit: 'Conejo', parrot: 'Loro', dragon: 'Dragón', panda: 'Panda', owl: 'Búho', phoenix: 'Fénix' },
+      pet: { none: 'Ninguna', dog: 'Perro', cat: 'Gato', rabbit: 'Conejo', parrot: 'Loro', dragon: 'Dragón', panda: 'Panda', owl: 'Búho', phoenix: 'Fénix', bear: 'Malparido' },
     },
   },
   privacy: {

@@ -675,6 +675,23 @@ function Pet({ kind }: { kind: HumanAvatar['pet'] }) {
         </>
       );
       break;
+    case 'bear':
+      body = (
+        <>
+          <Poly p={octagon(4, 6, 5)} fill="#6b4423" />
+          <Poly p={octagon(19, 6, 5)} fill="#6b4423" />
+          <Poly p={octagon(4, 6, 2.4)} fill="#c98b4a" />
+          <Poly p={octagon(19, 6, 2.4)} fill="#c98b4a" />
+          <Poly p="3,6 19,6 24,16 19,28 5,28 0,16" fill="#8b5a2b" />
+          <Poly p="3,6 11,6 9,17 0,16" fill="#fff" opacity={0.12} />
+          <Poly p="6,16 18,16 18,26 6,26" fill="#d9b382" />
+          <Poly p="5,10 7,10 7,12 5,12" fill="#111" />
+          <Poly p="16,10 18,10 18,12 16,12" fill="#111" />
+          <Poly p="9,16 14,16 11.5,20" fill="#111" />
+          <polyline points="11.5,20 11.5,23 8,24 M11.5,23 15,24" stroke="#111" strokeWidth="0.8" fill="none" />
+        </>
+      );
+      break;
     case 'panda':
       body = (
         <>

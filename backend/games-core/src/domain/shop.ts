@@ -36,6 +36,7 @@ export const SHOP_ITEMS: readonly ShopItem[] = [
   item('accessory', 'headphones', 80),
   item('clothes', 'suit', 100),
   item('clothes', 'armor', 180),
+  item('pet', 'bear', 1), // el oso "Malparido"
   item('pet', 'cat', 70),
   item('pet', 'dog', 70),
   item('pet', 'rabbit', 90),

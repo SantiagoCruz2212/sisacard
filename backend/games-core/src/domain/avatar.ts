@@ -9,7 +9,7 @@ export const HAT_STYLES = ['none', 'cap', 'beanie', 'tophat', 'crown', 'headband
 export const GLASSES_STYLES = ['none', 'round', 'square', 'sunglasses', 'monocle', 'visor'] as const;
 export const BEARD_STYLES = ['none', 'stubble', 'mustache', 'goatee', 'beard'] as const;
 export const ACCESSORY_STYLES = ['none', 'earring', 'necklace', 'scarf', 'bowtie', 'eyepatch', 'headphones', 'medal', 'halo'] as const;
-export const PET_STYLES = ['none', 'dog', 'cat', 'rabbit', 'parrot', 'dragon', 'panda', 'owl', 'phoenix'] as const;
+export const PET_STYLES = ['none', 'dog', 'cat', 'rabbit', 'parrot', 'dragon', 'panda', 'owl', 'phoenix', 'bear'] as const;
 export const VEHICLES = ['apache', 'motorcycle'] as const;
 
 /** Cantidad de colores de cada paleta (los colores en sí se definen en el frontend). */
