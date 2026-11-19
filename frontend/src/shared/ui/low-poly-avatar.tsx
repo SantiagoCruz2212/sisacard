@@ -688,7 +688,8 @@ function Pet({ kind }: { kind: HumanAvatar['pet'] }) {
           <Poly p="5,10 7,10 7,12 5,12" fill="#111" />
           <Poly p="16,10 18,10 18,12 16,12" fill="#111" />
           <Poly p="9,16 14,16 11.5,20" fill="#111" />
-          <polyline points="11.5,20 11.5,23 8,24 M11.5,23 15,24" stroke="#111" strokeWidth="0.8" fill="none" />
+          <polyline points="8,24 11.5,23 15,24" stroke="#111" strokeWidth="0.8" fill="none" />
+          <polyline points="11.5,20 11.5,23" stroke="#111" strokeWidth="0.8" fill="none" />
         </>
       );
       break;
