@@ -112,6 +112,8 @@ export interface UnoSettings {
 }
 
 export interface UnoLogEntry {
+  /** Creciente: sirve para animar cada jugada una sola vez. */
+  id: number;
   userId: string;
   kind:
     | 'play'

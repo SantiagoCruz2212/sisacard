@@ -388,7 +388,13 @@ describe('cartas de UNO Infinity', () => {
     const { game, cards, play } = rig([[d6, ...filler()], filler(), filler()], card('red', '5'), {}, () => 0.5);
     play('a', d6, { color: 'red' });
     expect(cards('b')).toBe(3 + 4); // 1 + floor(0.5 * 6)
-    expect(game.view('a').log.find((e) => e.kind === 'dice')).toMatchObject({ roll: 4, count: 6 });
+    const log = game.view('a').log;
+    const diceAt = log.findIndex((e) => e.kind === 'dice');
+    expect(log[diceAt]).toMatchObject({ userId: 'a', roll: 4, count: 6 });
+    // La animación del dado se apoya en esto: ids crecientes y el robo de la víctima justo después.
+    expect(log[diceAt + 1]).toMatchObject({ kind: 'draw', userId: 'b', count: 4 });
+    expect(log.map((e) => e.id)).toEqual([...log.map((e) => e.id)].sort((x, y) => x - y));
+    expect(new Set(log.map((e) => e.id)).size).toBe(log.length);
     expect(game.view('a').turnId).toBe('c');
   });
 

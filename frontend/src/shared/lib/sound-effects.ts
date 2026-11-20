@@ -165,3 +165,37 @@ export function playGunshot() {
   ring.start(t + 0.05);
   ring.stop(t + 0.95);
 }
+
+/** Golpecito corto de ruido filtrado: un dado chocando con la mesa. */
+function tap(c: AudioContext, at: number, volume: number, freq: number) {
+  const length = Math.floor(c.sampleRate * 0.04);
+  const buffer = c.createBuffer(1, length, c.sampleRate);
+  const data = buffer.getChannelData(0);
+  for (let i = 0; i < length; i++) data[i] = (Math.random() * 2 - 1) * (1 - i / length) ** 3;
+  const src = c.createBufferSource();
+  src.buffer = buffer;
+  const band = c.createBiquadFilter();
+  band.type = 'bandpass';
+  band.frequency.value = freq;
+  band.Q.value = 2.5;
+  const gain = c.createGain();
+  gain.gain.value = volume;
+  src.connect(band);
+  band.connect(gain);
+  gain.connect(c.destination);
+  src.start(at);
+}
+
+/** Dado rodando: varios golpecitos que se van frenando y uno final más seco al caer. */
+export function playDiceRoll() {
+  const c = audio();
+  if (!c) return;
+  if (c.state === 'suspended') void c.resume();
+  const now = c.currentTime;
+  let t = 0;
+  for (let i = 0; i < 9; i++) {
+    tap(c, now + t, 0.35 + Math.random() * 0.25, 2200 + Math.random() * 1600);
+    t += 0.06 + i * 0.014;
+  }
+  tap(c, now + 1.05, 0.9, 900);
+}

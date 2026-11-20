@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { CardBack, UnoCard } from '@/features/uno/components/uno-card';
 import { cardLabel } from '@/features/uno/models/card-label';
+import { cardHelp } from '@/features/uno/models/card-help';
 import { usePrivacyStore } from '@/shared/lib/privacy-store';
 import type { UnoCard as Card, UnoView } from '@/shared/models/realtime';
 import { Button } from '@/shared/ui/button';
@@ -34,6 +35,7 @@ export function Hand({ view, sayUno, onToggleUno, onSelect, discardSel = null }:
                 card={card}
                 label={cardLabel(card, t)}
                 dark={view.side === 'dark'}
+                help={cardHelp(card, view.settings, t)}
                 playable={playable}
                 selected={discardSel?.includes(card.id)}
                 disabled={!playable}

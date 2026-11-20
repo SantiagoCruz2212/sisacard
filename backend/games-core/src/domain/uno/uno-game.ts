@@ -39,6 +39,8 @@ interface Seat extends Player {
 }
 
 interface LogEntry {
+  /** Creciente: el cliente lo usa para animar cada jugada una sola vez (p. ej. el dado). */
+  id: number;
   userId: string;
   kind:
     | 'play'
@@ -104,6 +106,7 @@ export class UnoGame implements GameMatch {
   private finishedOrder: string[] = [];
   private leftOrder: string[] = [];
   private log: LogEntry[] = [];
+  private logSeq = 0;
   private results: { userId: string; place: number; points: number }[] | null = null;
   private deadline = 0;
   private cancelTimer: (() => void) | null = null;
@@ -147,8 +150,8 @@ export class UnoGame implements GameMatch {
   private currentSeat() {
     return this.seats[this.current] as Seat;
   }
-  private push(entry: LogEntry) {
-    this.log = [...this.log, entry].slice(-LOG_SIZE);
+  private push(entry: Omit<LogEntry, 'id'>) {
+    this.log = [...this.log, { id: ++this.logSeq, ...entry }].slice(-LOG_SIZE);
   }
 
   private nextActive(from: number, steps: number): number {

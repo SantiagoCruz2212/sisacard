@@ -1,10 +1,13 @@
 import { useTranslation } from 'react-i18next';
+import { CardGuide } from '@/features/uno/components/card-guide';
+import { DiceRollOverlay } from '@/features/uno/components/dice-roll-overlay';
 import { ChoicePanel } from '@/features/uno/components/choice-panel';
 import { GameLog } from '@/features/uno/components/game-log';
 import { Hand } from '@/features/uno/components/hand';
 import { PlayersBar } from '@/features/uno/components/players-bar';
 import { RevealPanel } from '@/features/uno/components/reveal-panel';
 import { TableCenter } from '@/features/uno/components/table-center';
+import { useDiceRolls } from '@/features/uno/hooks/use-dice-rolls';
 import { useUno } from '@/features/uno/hooks/use-uno';
 import { Card } from '@/shared/ui/card';
 import { ResultsTable } from '@/shared/ui/results-table';
@@ -14,6 +17,7 @@ export function UnoView() {
   const { t } = useTranslation();
   const uno = useUno();
   const { view, meId } = uno;
+  const diceRoll = useDiceRolls(view?.log);
   if (!view) return null;
 
   if (view.phase === 'ended') {
@@ -45,6 +49,7 @@ export function UnoView() {
 
   return (
     <Card>
+      {diceRoll && <DiceRollOverlay key={diceRoll.id} roll={diceRoll} nameOf={uno.nameOf} />}
       <PlayersBar view={view} meId={meId} onCatch={uno.catchPlayer} />
       <TableCenter view={view} meId={meId} seconds={uno.seconds} onDraw={uno.draw} onPass={uno.pass} />
       <RevealPanel view={view} seconds={uno.revealSeconds} nameOf={uno.nameOf} />
@@ -63,6 +68,7 @@ export function UnoView() {
         </>
       )}
       <GameLog view={view} nameOf={uno.nameOf} />
+      <CardGuide settings={view.settings} className="mt-4" />
     </Card>
   );
 }

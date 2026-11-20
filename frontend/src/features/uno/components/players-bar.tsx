@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { UnoCard } from '@/features/uno/components/uno-card';
 import { cardLabel } from '@/features/uno/models/card-label';
+import { cardHelp } from '@/features/uno/models/card-help';
 import type { UnoView } from '@/shared/models/realtime';
 import { Button } from '@/shared/ui/button';
 
@@ -31,7 +32,7 @@ export function PlayersBar({ view, meId, onCatch }: PlayersBarProps) {
             {p.backs && p.backs.length > 0 && (
               <div className="mt-1 flex max-w-[260px] flex-wrap gap-0.5" aria-label={t('uno.otherSide')} title={t('uno.otherSide')}>
                 {p.backs.map((face, i) => (
-                  <UnoCard key={i} card={face} dark={view.side === 'light'} label={cardLabel(face, t)} size="sm" />
+                  <UnoCard key={i} card={face} dark={view.side === 'light'} help={cardHelp(face, view.settings, t)} label={cardLabel(face, t)} size="sm" />
                 ))}
               </div>
             )}

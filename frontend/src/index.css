@@ -72,3 +72,30 @@ body {
   .seat-enter { animation: none; }
   .seat-leave { display: none; }
 }
+
+/* Dado del UNO: rueda, cae y muestra el resultado. */
+@keyframes dice-overlay {
+  0% { opacity: 0; transform: scale(0.8); }
+  6% { opacity: 1; transform: scale(1); }
+  88% { opacity: 1; transform: scale(1); }
+  100% { opacity: 0; transform: scale(0.96); }
+}
+@keyframes dice-tumble {
+  0% { transform: translateY(0) rotate(0deg) scale(1); }
+  25% { transform: translateY(-10px) rotate(95deg) scale(0.92); }
+  50% { transform: translateY(0) rotate(180deg) scale(1.05); }
+  75% { transform: translateY(-6px) rotate(275deg) scale(0.94); }
+  100% { transform: translateY(0) rotate(360deg) scale(1); }
+}
+@keyframes dice-land {
+  0% { transform: scale(1.35) rotate(-18deg); }
+  60% { transform: scale(0.94) rotate(4deg); }
+  100% { transform: scale(1) rotate(0deg); }
+}
+.dice-overlay { animation: dice-overlay 3.2s ease both; }
+.dice-tumble { animation: dice-tumble 0.42s linear infinite; }
+.dice-land { animation: dice-land 0.45s cubic-bezier(0.2, 0.8, 0.2, 1.3) both; }
+
+@media (prefers-reduced-motion: reduce) {
+  .dice-tumble, .dice-land { animation: none; }
+}

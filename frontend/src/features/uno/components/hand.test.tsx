@@ -53,6 +53,13 @@ describe('Hand con la información oculta', () => {
     expect(onSelect).toHaveBeenCalledWith(view.myHand[0]);
   });
 
+  it('cada carta describe qué hace (burbuja enlazada con aria-describedby)', () => {
+    render(<Hand {...props()} />);
+    const skip = screen.getByRole('button', { name: /azul salto/i });
+    expect(skip).toHaveAccessibleDescription(/pierde su turno/);
+    expect(screen.getAllByRole('tooltip')).toHaveLength(2);
+  });
+
   it('oculta: no se ve ningún valor ni color y no se puede jugar a ciegas', () => {
     usePrivacyStore.setState({ hidden: true });
     const onSelect = vi.fn();

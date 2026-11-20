@@ -1,4 +1,5 @@
 import { useTranslation } from 'react-i18next';
+import { CardGuide } from '@/features/uno/components/card-guide';
 import { useCurrentRoom, useRealtimeCall } from '@/shared/hooks/use-realtime';
 import { useSession } from '@/shared/hooks/use-session';
 import type { UnoSettings } from '@/shared/models/realtime';
@@ -50,6 +51,7 @@ export function UnoSettingsPanel() {
         </div>
         <div className="grid gap-2 sm:grid-cols-2">{RULES.map(toggle)}</div>
       </fieldset>
+      <CardGuide settings={settings} className="mt-3" />
     </Card>
   );
 }
