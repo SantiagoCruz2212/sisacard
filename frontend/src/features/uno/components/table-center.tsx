@@ -26,7 +26,7 @@ export function TableCenter({ view, meId, seconds, onDraw, onPass }: TableCenter
       <div className="text-center">
         {view.deckBack ? (
           <div className="flex flex-col items-center gap-1">
-            <UnoCard card={view.deckBack} label={`${t('uno.deckShows')}: ${cardLabel(view.deckBack, t)}`} onClick={onDraw} disabled={!view.canDraw} playable={view.canDraw} />
+            <UnoCard card={view.deckBack} dark={view.side === 'light'} label={`${t('uno.deckShows')}: ${cardLabel(view.deckBack, t)}`} onClick={onDraw} disabled={!view.canDraw} playable={view.canDraw} />
           </div>
         ) : (
           <CardBack label={t('uno.draw')} onClick={onDraw} disabled={!view.canDraw} />
@@ -38,7 +38,7 @@ export function TableCenter({ view, meId, seconds, onDraw, onPass }: TableCenter
           </Button>
         )}
       </div>
-      {view.top && <UnoCard card={view.top} label={cardLabel(view.top, t)} />}
+      {view.top && <UnoCard card={view.top} dark={view.side === 'dark'} label={cardLabel(view.top, t)} />}
       <div className="flex flex-col items-center gap-2 text-sm">
         {view.settings.flip && <span className="font-semibold">{t(`uno.side.${view.side}`)}</span>}
         <span className="flex items-center gap-2">

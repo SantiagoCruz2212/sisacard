@@ -33,6 +33,7 @@ export function Hand({ view, sayUno, onToggleUno, onSelect, discardSel = null }:
                 key={card.id}
                 card={card}
                 label={cardLabel(card, t)}
+                dark={view.side === 'dark'}
                 playable={playable}
                 selected={discardSel?.includes(card.id)}
                 disabled={!playable}

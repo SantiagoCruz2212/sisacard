@@ -12,7 +12,7 @@ export function RevealPanel({ view, seconds, nameOf }: { view: UnoView; seconds:
       <p className="mb-2 text-sm font-semibold">👁 {t('uno.revealTitle', { name: nameOf(view.reveal.targetId), seconds })}</p>
       <div className="flex flex-wrap gap-1">
         {view.reveal.cards.map((face, i) => (
-          <UnoCard key={i} card={face} label={cardLabel(face, t)} size="sm" />
+          <UnoCard key={i} card={face} dark={view.side === 'dark'} label={cardLabel(face, t)} size="sm" />
         ))}
       </div>
     </div>

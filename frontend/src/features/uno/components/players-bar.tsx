@@ -31,7 +31,7 @@ export function PlayersBar({ view, meId, onCatch }: PlayersBarProps) {
             {p.backs && p.backs.length > 0 && (
               <div className="mt-1 flex max-w-[260px] flex-wrap gap-0.5" aria-label={t('uno.otherSide')} title={t('uno.otherSide')}>
                 {p.backs.map((face, i) => (
-                  <UnoCard key={i} card={face} label={cardLabel(face, t)} size="sm" />
+                  <UnoCard key={i} card={face} dark={view.side === 'light'} label={cardLabel(face, t)} size="sm" />
                 ))}
               </div>
             )}
