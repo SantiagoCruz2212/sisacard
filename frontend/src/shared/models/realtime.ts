@@ -55,22 +55,101 @@ export interface ImpostorView {
   reveal: { word: string; impostors: string[] } | null;
 }
 
-export type UnoColor = 'red' | 'yellow' | 'green' | 'blue';
-export type UnoValue = '0' | '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9' | 'skip' | 'reverse' | 'draw2' | 'wild' | 'wild4';
+export type UnoLightColor = 'red' | 'yellow' | 'green' | 'blue';
+export type UnoDarkColor = 'pink' | 'teal' | 'orange' | 'purple';
+export type UnoColor = UnoLightColor | UnoDarkColor;
+export type UnoDigit = '0' | '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9';
+export type UnoValue =
+  | UnoDigit
+  | 'skip'
+  | 'reverse'
+  | 'draw2'
+  | 'wild'
+  | 'wild4'
+  | 'number'
+  | 'draw4'
+  | 'double'
+  | 'half'
+  | 'plusAll'
+  | 'target4'
+  | 'minus1'
+  | 'replay'
+  | 'dice4'
+  | 'dice6'
+  | 'dice8'
+  | 'dice12'
+  | 'dice20'
+  | 'eye'
+  | 'swap'
+  | 'joker'
+  | 'rotate'
+  | 'draw1'
+  | 'flip'
+  | 'wildDraw2'
+  | 'draw5'
+  | 'skipAll'
+  | 'wildDrawColor';
 
-export interface UnoCard {
-  id: number;
+export interface UnoCardFace {
   color: UnoColor | 'wild';
   value: UnoValue;
 }
 
+export interface UnoCard extends UnoCardFace {
+  id: number;
+}
+
+export interface UnoSettings {
+  /** Cartas de UNO Infinity (en Flip, a los dos lados). */
+  infinity: boolean;
+  /** Baraja de dos caras de UNO Flip. */
+  flip: boolean;
+  stacking: boolean;
+  challenge: boolean;
+  sevenZero: boolean;
+  jumpIn: boolean;
+  catchUno: boolean;
+}
+
 export interface UnoLogEntry {
   userId: string;
-  kind: 'play' | 'draw' | 'unoPenalty' | 'finished' | 'timeout';
-  card?: UnoCard;
+  kind:
+    | 'play'
+    | 'draw'
+    | 'unoPenalty'
+    | 'finished'
+    | 'timeout'
+    | 'challenge'
+    | 'caught'
+    | 'saidUno'
+    | 'swap'
+    | 'rotate'
+    | 'flip'
+    | 'dice'
+    | 'discard'
+    | 'eye'
+    | 'jumpIn';
+  card?: UnoCardFace;
   color?: UnoColor;
+  number?: UnoDigit;
   count?: number;
   place?: number;
+  targetId?: string;
+  roll?: number;
+  success?: boolean;
+}
+
+export interface UnoPlayer {
+  id: string;
+  username: string;
+  cards: number;
+  place: number | null;
+  left: boolean;
+  connected: boolean;
+  /** Se quedó con 1 carta sin decir UNO: se le puede atrapar. */
+  vulnerable: boolean;
+  /** UNO Flip: la otra cara de sus cartas (null en tu propia mano o fuera de Flip). */
+  backs: UnoCardFace[] | null;
 }
 
 export interface UnoView {
@@ -78,16 +157,28 @@ export interface UnoView {
   phase: 'playing' | 'ended';
   deadline: number;
   now: number;
-  players: { id: string; username: string; cards: number; place: number | null; left: boolean; connected: boolean }[];
+  settings: UnoSettings;
+  side: 'light' | 'dark';
+  players: UnoPlayer[];
   myHand: UnoCard[];
   playable: number[];
   top: UnoCard | null;
   currentColor: UnoColor;
+  currentValue: UnoValue;
   turnId: string | null;
   direction: 1 | -1;
   drawCount: number;
+  /** UNO Flip: la cara que muestra el mazo. */
+  deckBack: UnoCardFace | null;
   canDraw: boolean;
   canPass: boolean;
+  /** Robo acumulado (apilar o desafío) que paga victimId si no responde. */
+  penalty: { amount: number; victimId: string; canChallenge: boolean } | null;
+  /** Lo que tienes que resolver antes de que pase tu turno. */
+  pending: { kind: 'discard' | 'color'; count: number } | null;
+  choosingId: string | null;
+  /** Carta Ojo: la mano que estás viendo. */
+  reveal: { targetId: string; cards: UnoCardFace[]; until: number } | null;
   log: UnoLogEntry[];
   results: PlaceResult[] | null;
 }
@@ -228,6 +319,8 @@ export interface RoomState {
   status: 'waiting' | 'playing';
   min: number;
   max: number;
+  /** Opciones del juego que elige el anfitrión (UNO: baraja y reglas de la casa). */
+  settings: Record<string, unknown>;
   players: (AppUser & { connected: boolean; avatar: Avatar })[];
   /** Quienes miran con la partida en curso. */
   spectators: (AppUser & { connected: boolean; avatar: Avatar })[];

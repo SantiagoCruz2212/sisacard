@@ -14,7 +14,7 @@ import { Page, PageHeader, SplitLayout } from '@/shared/ui/page';
  * Sala: cabecera, chat y estado de espera. La pantalla del juego en curso se recibe como `children`
  * (la compone la capa app, porque un feature no puede importar a otro).
  */
-export function RoomView({ children }: { children?: ReactNode }) {
+export function RoomView({ children, settings }: { children?: ReactNode; settings?: ReactNode }) {
   const { t } = useTranslation();
   const { room, user, isHost, isSpectator, gameEnded, leave, start, rematch, sendMessage } = useRoom();
   if (!room) return null;
@@ -31,7 +31,12 @@ export function RoomView({ children }: { children?: ReactNode }) {
           <>
             {!(room.game === 'amongus' && room.status === 'playing') && <TableScene room={room} meId={user?.id ?? ''} />}
             {isSpectator && <p className="rounded-lg bg-line px-3 py-2 text-sm">{t('room.spectating')}</p>}
-            {children ?? <WaitingRoom room={room} isHost={isHost} onStart={start} />}
+            {children ?? (
+              <>
+                <WaitingRoom room={room} isHost={isHost} onStart={start} />
+                {settings}
+              </>
+            )}
             {gameEnded &&
               (isHost ? (
                 <Button variant="primary" onClick={rematch}>

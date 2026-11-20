@@ -4,6 +4,23 @@ Juegos en el navegador para jugar entre compañeros de oficina (misma red). Perf
 
 Juegos: **Impostor** (palabra secreta, 3–12 jugadores), **UNO** (2–10) y **Blackjack Royale** (2–8).
 
+## UNO: barajas y reglas de la casa
+
+En la sala de espera el anfitrión arma la **baraja** con dos interruptores (**Cartas Infinity** y **Flip**, combinables) y activa las **reglas de la casa** (los demás las ven). Todo vive en `backend/games-core/src/domain/uno/`.
+
+- **Clásica:** las 108 cartas de siempre.
+- **Infinity** (+39 cartas): **#** de color o comodín (vale el número que elijas; la de color entra sobre cualquier número), **+4 de color**, **x2** (el siguiente roba tantas cartas como tiene), **/2** (eliges y descartas la mitad de tu mano), **++4** (todos los demás roban 4 y vuelves a jugar), **+4T** (eliges quién roba 4; el turno sigue normal), **-1** (descartas una carta más), **Replay** de color o comodín (vuelves a jugar), **dados D4/D6/D8/D12/D20** (el siguiente roba lo que salga y pierde el turno), **Ojo** (ves 10 s la mano de quien elijas), **Cambio de mano**, **Joker** (sin efecto; se juega cuando sea, incluso fuera de turno, y no cambia color ni número) y **Rotación** (todas las manos pasan al siguiente en el sentido del juego).
+- **Flip:** 112 cartas de dos caras. Lado claro: +1, Wild +2. Lado oscuro (rosa, turquesa, naranja, morado): +5, salta a todos, Wild roba-hasta-el-color. La carta **Flip** voltea la mesa: la carta de arriba muestra su otra cara y el mazo se invierte; si queda un comodín, quien volteó elige el color. Como en la mesa real, ves la otra cara de las cartas ajenas y la del mazo.
+- **Infinity + Flip:** 155 cartas de dos caras. Cada lado lleva sus cartas Flip más las 39 de Infinity en sus propios colores (en el lado oscuro, rosa, turquesa, naranja y morado), y hay una Flip más por color para que la mesa se siga volteando seguido.
+
+Reglas opcionales:
+
+- **Apilar +2/+4:** responde un + (incluidos +1, +5 y +4 de color) con otro igual o mayor, sin importar el color; quien no responde roba todo y pierde el turno.
+- **Desafiar el +4** (y el Wild +2 de Flip): si quien lo jugó tenía el color en juego, roba él lo acumulado y el desafiante juega normal; si no, el desafiante roba lo acumulado + 2.
+- **7-0:** el 7 cambia tu mano con quien elijas; el 0 pasa todas las manos en el sentido del juego.
+- **Colarse (jump-in):** juega fuera de turno una carta idéntica a la de la mesa; el turno sigue desde ti.
+- **Atrapar el UNO:** olvidar el UNO ya no cuesta 2 automáticamente: cualquiera pulsa **¡Atrapar!** antes de que actúe el siguiente jugador; tú puedes pulsar **¡UNO!** a tiempo para salvarte.
+
 ## Blackjack Royale
 
 Blackjack sin crupier y en modo battle royale. Todas las manos son públicas.
@@ -35,7 +52,7 @@ En el lobby, cualquiera pulsa **Iniciar votación**. Durante 30 segundos todos l
 
 Al terminar una partida cada jugador recibe puntos según su posición: el 1.º se lleva 10 y baja linealmente hasta el último (siempre ≥ 1). Con 4 jugadores: 10, 8, 5, 3. Los empatados comparten posición.
 
-- **UNO:** el orden en que se quedan sin cartas es el ranking; la partida sigue hasta que queda un solo jugador. Sin apilar +2/+4 y sin desafío al +4. Si te quedas con 1 carta sin pulsar ¡UNO! antes de jugarla, robas 2.
+- **UNO:** el orden en que se quedan sin cartas es el ranking; la partida sigue hasta que queda un solo jugador. Por defecto sin apilar +2/+4 y sin desafío al +4 (ver reglas de la casa arriba). Si te quedas con 1 carta sin pulsar ¡UNO! antes de jugarla, robas 2.
 - **Impostor:** el equipo ganador queda 1.º y el perdedor en la posición siguiente (con empate dentro del equipo).
 - La clasificación (`/leaderboard`) es general o por juego. La regla vive en `backend/games-core/src/domain/scoring.ts`.
 
@@ -74,7 +91,7 @@ npm run build
 npm start            # http://TU_IP:3001
 ```
 
-Jugar sin más gente: `node infra/bots.mjs 2` (Impostor), `node infra/bots.mjs 2 uno` o `node infra/bots.mjs 2 blackjack` crea una sala con 2 bots que se inicia sola cuando entras.
+Jugar sin más gente: `node infra/bots.mjs 2` (Impostor), `node infra/bots.mjs 2 uno` o `node infra/bots.mjs 2 blackjack` crea una sala con 2 bots que se inicia sola cuando entras. Para UNO se pueden agregar `infinity` y/o `flip` (la baraja) y `reglas` para activarlas todas: `node infra/bots.mjs 2 uno infinity flip reglas`.
 
 ## Arquitectura
 

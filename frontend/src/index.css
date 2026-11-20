@@ -20,6 +20,11 @@
   --color-uno-green: #3ea867;
   --color-uno-blue: #3b82f6;
   --color-uno-wild: #1f2433;
+  /* Lado oscuro de UNO Flip */
+  --color-uno-pink: #d9448f;
+  --color-uno-teal: #2ec4b6;
+  --color-uno-orange: #f28c28;
+  --color-uno-purple: #8b5cf6;
   --font-sans: system-ui, -apple-system, 'Segoe UI', sans-serif;
 }
 

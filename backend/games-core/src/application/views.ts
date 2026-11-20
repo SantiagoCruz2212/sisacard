@@ -12,6 +12,7 @@ export function roomView(room: Room, userId: string, isOnline: (id: string) => b
     status: room.status,
     min: room.minPlayers,
     max: room.maxPlayers,
+    settings: room.settings,
     players: room.players.map(seat),
     spectators: room.spectators.map(seat),
     chat: room.chat,

@@ -1,7 +1,9 @@
 import { useTranslation } from 'react-i18next';
+import { ChoicePanel } from '@/features/uno/components/choice-panel';
 import { GameLog } from '@/features/uno/components/game-log';
 import { Hand } from '@/features/uno/components/hand';
 import { PlayersBar } from '@/features/uno/components/players-bar';
+import { RevealPanel } from '@/features/uno/components/reveal-panel';
 import { TableCenter } from '@/features/uno/components/table-center';
 import { useUno } from '@/features/uno/hooks/use-uno';
 import { Card } from '@/shared/ui/card';
@@ -31,28 +33,34 @@ export function UnoView() {
   }
 
   const me = view.players.find((p) => p.id === meId);
+  const vulnerable = view.players.find((p) => p.vulnerable && p.id !== meId);
+
+  let hint: string;
+  if (view.choosingId && view.choosingId !== meId) hint = t('uno.choosing', { name: uno.nameOf(view.choosingId) });
+  else if (view.penalty && view.penalty.victimId !== meId)
+    hint = t('uno.penaltyOther', { name: uno.nameOf(view.penalty.victimId), count: view.penalty.amount });
+  else if (uno.isMyTurn) hint = view.canPass ? t('uno.drawnHint') : t('uno.yourTurn');
+  else if (view.playable.length > 0) hint = t('uno.outOfTurnHint');
+  else hint = t('uno.turnOf', { name: uno.nameOf(view.turnId) });
+
   return (
     <Card>
-      <PlayersBar view={view} meId={meId} />
-      <TableCenter view={view} seconds={uno.seconds} onDraw={uno.draw} onPass={uno.pass} />
-      <p className={`mb-2 text-sm ${uno.isMyTurn ? 'font-semibold text-primary' : 'text-muted'}`}>
-        {uno.isMyTurn ? (view.canPass ? t('uno.drawnHint') : t('uno.yourTurn')) : t('uno.turnOf', { name: uno.nameOf(view.turnId) })}
-      </p>
+      <PlayersBar view={view} meId={meId} onCatch={uno.catchPlayer} />
+      <TableCenter view={view} meId={meId} seconds={uno.seconds} onDraw={uno.draw} onPass={uno.pass} />
+      <RevealPanel view={view} seconds={uno.revealSeconds} nameOf={uno.nameOf} />
+      <p className={`mb-2 text-sm ${uno.isMyTurn ? 'font-semibold text-primary' : 'text-muted'}`}>{hint}</p>
+      {vulnerable && view.settings.catchUno && me && !me.left && (
+        <p className="mb-2 text-sm font-semibold text-bad">{t('uno.canCatch', { name: vulnerable.username })}</p>
+      )}
       {!me ? (
         <p className="text-sm text-muted">{t('room.spectating')}</p>
       ) : me.place ? (
         <p className="text-sm text-good">{t('uno.out', { place: me.place })}</p>
       ) : (
-        <Hand
-          view={view}
-          isMyTurn={uno.isMyTurn}
-          sayUno={uno.sayUno}
-          pendingWild={uno.pendingWild}
-          onToggleUno={uno.toggleUno}
-          onSelect={uno.selectCard}
-          onChooseColor={uno.chooseColor}
-          onCancelWild={uno.cancelWild}
-        />
+        <>
+          <ChoicePanel uno={uno} />
+          <Hand view={view} sayUno={uno.sayUno} onToggleUno={uno.toggleUno} onSelect={uno.selectCard} discardSel={uno.discardSel} />
+        </>
       )}
       <GameLog view={view} nameOf={uno.nameOf} />
     </Card>

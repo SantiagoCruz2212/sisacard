@@ -1,11 +1,16 @@
 // Bots de prueba para jugar contigo sin necesitar más personas.
-// Uso: node infra/bots.mjs [cantidad=2] [impostor|uno|blackjack]   (el servidor debe estar corriendo)
+// Uso: node infra/bots.mjs [cantidad=2] [impostor|uno|blackjack] [infinity] [flip] [reglas]
+// (el servidor debe estar corriendo). Ej.: node infra/bots.mjs 2 uno infinity flip reglas
 // El primer bot crea la sala y la inicia en cuanto entre un humano; todos juegan solos.
 import { io } from 'socket.io-client';
 
 const BASE = process.env.BASE ?? 'http://localhost:3001';
 const count = Number(process.argv[2] ?? 2);
 const game = ['uno', 'blackjack'].includes(process.argv[3]) ? process.argv[3] : 'impostor';
+// UNO: "infinity" y/o "flip" eligen la baraja (se pueden combinar) y "reglas" activa todas las reglas de la casa.
+const unoInfinity = process.argv.includes('infinity');
+const unoFlip = process.argv.includes('flip');
+const unoRules = process.argv.includes('reglas');
 const suffix = Math.random().toString(36).slice(2, 5);
 const WORDS = ['bonito', 'grande', 'rápido', 'común', 'antiguo', 'ruidoso', 'caliente', 'útil'];
 
@@ -33,7 +38,7 @@ for (let i = 0; i < count; i++) {
     }
     const v = room.play;
     if (!v) return bot.started && (bot.started = false);
-    const key = `${v.phase}:${v.turnId}:${v.round}:${v.myVote}:${v.guesserId}:${v.myHand?.length}:${v.top?.id}:${v.canPass}:${v.cycle}:${v.players?.map((p) => `${p.cards?.length}${p.status}`).join()}`;
+    const key = `${v.phase}:${v.turnId}:${v.round}:${v.myVote}:${v.guesserId}:${v.myHand?.length}:${v.top?.id}:${v.canPass}:${v.pending?.kind}:${v.side}:${v.cycle}:${v.players?.map((p) => `${p.cards?.length}${p.status}`).join()}`;
     if (key === last) return;
     last = key;
     const wait = () => new Promise((r) => setTimeout(r, 1000 + Math.random() * 2500));
@@ -45,11 +50,26 @@ for (let i = 0; i < count; i++) {
       return;
     }
     if (v.type === 'uno') {
-      if (v.turnId !== user.id) return;
+      if (v.turnId !== user.id || v.phase !== 'playing') return;
       await wait();
+      const colors = v.side === 'dark' ? ['pink', 'teal', 'orange', 'purple'] : ['red', 'yellow', 'green', 'blue'];
+      const color = colors[Math.floor(Math.random() * 4)];
+      if (v.pending?.kind === 'discard') {
+        return call('game:action', { type: 'discard', cardIds: v.myHand.slice(0, v.pending.count).map((c) => c.id), uno: true });
+      }
+      if (v.pending?.kind === 'color') return call('game:action', { type: 'color', color });
       const card = v.myHand.find((c) => c.id === v.playable[0]);
-      if (card) call('game:action', { type: 'play', cardId: card.id, color: card.color === 'wild' ? 'blue' : undefined, uno: true });
-      else if (v.canDraw) call('game:action', { type: 'draw' });
+      const rival = v.players.find((p) => p.id !== user.id && !p.left && !p.place);
+      if (card) {
+        call('game:action', {
+          type: 'play',
+          cardId: card.id,
+          color: card.color === 'wild' ? color : undefined,
+          number: card.value === 'number' ? String(Math.floor(Math.random() * 10)) : undefined,
+          target: rival?.id,
+          uno: true,
+        });
+      } else if (v.canDraw) call('game:action', { type: 'draw' });
       else if (v.canPass) call('game:action', { type: 'pass' });
       return;
     }
@@ -70,5 +90,9 @@ for (let i = 0; i < count; i++) {
 
 await new Promise((r) => setTimeout(r, 800));
 const created = await bots[0].call('room:create', { game });
+if (game === 'uno' && (unoInfinity || unoFlip || unoRules)) {
+  const rules = unoRules ? { stacking: true, challenge: true, sevenZero: true, jumpIn: true, catchUno: true } : {};
+  await bots[0].call('room:settings', { settings: { infinity: unoInfinity, flip: unoFlip, ...rules } });
+}
 for (const b of bots.slice(1)) await b.call('room:join', { roomId: created.roomId });
 console.log(`Sala de ${game} ${created.roomId} lista con ${count} bots. Entra desde el lobby con tu usuario.`);

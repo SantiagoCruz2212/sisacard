@@ -150,7 +150,7 @@ export class StartGame {
             results: outcome.results,
             occurredAt: new Date().toISOString(),
           }),
-      }),
+      }, room.settings),
     );
     this.rooms.save(room);
     this.publisher.room(room);
@@ -170,6 +170,19 @@ export class RematchRoom {
     room.rematch(userId, this.presence.isOnline);
     this.publisher.room(room);
     this.publisher.lobby();
+  }
+}
+
+export class UpdateRoomSettings {
+  constructor(
+    private rooms: RoomRepository,
+    private publisher: RoomPublisher,
+  ) {}
+
+  execute(userId: string, settings: unknown) {
+    const room = requireRoom(this.rooms, userId);
+    room.updateSettings(userId, settings);
+    this.publisher.room(room);
   }
 }
 

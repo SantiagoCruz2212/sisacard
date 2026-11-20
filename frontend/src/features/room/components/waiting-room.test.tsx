@@ -14,6 +14,7 @@ const room = (players: number): RoomState => ({
   status: 'waiting',
   min: 3,
   max: 12,
+  settings: {},
   chat: [],
   play: null,
   spectators: [],

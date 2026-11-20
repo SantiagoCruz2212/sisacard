@@ -18,24 +18,28 @@ const view: UnoView = {
   playable: [1],
   top: { id: 9, color: 'red', value: '3' },
   currentColor: 'red',
+  currentValue: '3',
+  settings: { infinity: false, flip: false, stacking: false, challenge: false, sevenZero: false, jumpIn: false, catchUno: false },
+  side: 'light',
   turnId: 'me',
   direction: 1,
   drawCount: 50,
+  deckBack: null,
   canDraw: true,
   canPass: false,
+  penalty: null,
+  pending: null,
+  choosingId: null,
+  reveal: null,
   log: [],
   results: null,
 };
 
 const props = (onSelect = vi.fn()) => ({
   view,
-  isMyTurn: true,
   sayUno: false,
-  pendingWild: null,
   onToggleUno: () => {},
   onSelect,
-  onChooseColor: () => {},
-  onCancelWild: () => {},
 });
 
 describe('Hand con la información oculta', () => {

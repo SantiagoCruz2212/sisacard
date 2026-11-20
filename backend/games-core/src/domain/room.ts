@@ -1,4 +1,4 @@
-import type { GameDefinition, GameId, GameMatch } from './game.js';
+import type { GameDefinition, GameId, GameMatch, GameSettings } from './game.js';
 import { DomainError, type ChatMessage, type Player } from './shared.js';
 
 export type RoomStatus = 'waiting' | 'playing';
@@ -12,6 +12,8 @@ export class Room {
   chat: ChatMessage[] = [];
   status: RoomStatus = 'waiting';
   match: GameMatch | null = null;
+  /** Opciones del juego (p. ej. reglas de la casa del UNO). Las cambia el anfitrión mientras se espera. */
+  settings: GameSettings;
 
   constructor(
     readonly id: string,
@@ -20,6 +22,7 @@ export class Room {
   ) {
     this.hostId = host.id;
     this.players = [host];
+    this.settings = definition.defaultSettings?.() ?? {};
   }
 
   get game(): GameId {
@@ -75,6 +78,13 @@ export class Room {
 
   assertHost(userId: string) {
     if (this.hostId !== userId) throw new DomainError('Solo el anfitrión puede hacer eso');
+  }
+
+  updateSettings(userId: string, raw: unknown) {
+    this.assertHost(userId);
+    if (this.status !== 'waiting') throw new DomainError('No se pueden cambiar las reglas con la partida en curso');
+    if (!this.definition.parseSettings) throw new DomainError('Este juego no tiene opciones');
+    this.settings = this.definition.parseSettings(raw);
   }
 
   start(userId: string, isOnline: (id: string) => boolean, createMatch: (players: Player[]) => GameMatch) {

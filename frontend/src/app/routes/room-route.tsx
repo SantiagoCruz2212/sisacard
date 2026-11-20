@@ -3,6 +3,7 @@ import { BlackjackView } from '@/features/blackjack/views/blackjack-view';
 import { ImpostorView } from '@/features/impostor/views/impostor-view';
 import { RoomView } from '@/features/room/views/room-view';
 import { RouletteView } from '@/features/roulette/views/roulette-view';
+import { UnoSettingsPanel } from '@/features/uno/components/uno-settings-panel';
 import { UnoView } from '@/features/uno/views/uno-view';
 import { useCurrentRoom } from '@/shared/hooks/use-realtime';
 
@@ -10,7 +11,7 @@ import { useCurrentRoom } from '@/shared/hooks/use-realtime';
 export function RoomRoute() {
   const room = useCurrentRoom();
   return (
-    <RoomView>
+    <RoomView settings={room?.game === 'uno' ? <UnoSettingsPanel /> : null}>
       {room?.play?.type === 'impostor' ? (
         <ImpostorView />
       ) : room?.play?.type === 'uno' ? (

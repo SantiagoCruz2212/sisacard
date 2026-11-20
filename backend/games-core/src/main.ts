@@ -23,6 +23,7 @@ import {
   SendRoomMessage,
   StartGame,
   UpdateAvatar,
+  UpdateRoomSettings,
 } from './application/use-cases.js';
 import { CastGameVote, CloseGameVote, StartGameVote, VotePublisher } from './application/vote-use-cases.js';
 import { createHttpApp } from './infrastructure/http-app.js';
@@ -81,6 +82,7 @@ registerSocketHandlers(
     leaveRoom,
     startGame: new StartGame(rooms, presence, scheduler, speed, bus, publisher),
     rematchRoom: new RematchRoom(rooms, presence, publisher),
+    updateSettings: new UpdateRoomSettings(rooms, publisher),
     performAction: new PerformGameAction(rooms, publisher),
     sendRoomMessage: new SendRoomMessage(rooms, scheduler, publisher),
     sendLobbyMessage: new SendLobbyMessage(history, scheduler, notifier),

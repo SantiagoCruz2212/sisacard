@@ -21,6 +21,10 @@ export interface GameAction {
   cardId?: unknown;
   color?: unknown;
   uno?: unknown;
+  /** UNO: número elegido para la carta #. */
+  number?: unknown;
+  /** UNO: cartas elegidas para descartar (/2 y -1). */
+  cardIds?: unknown;
   /** Dirección de movimiento (-1..1) para los juegos en tiempo real. */
   dx?: unknown;
   dy?: unknown;
@@ -52,5 +56,11 @@ export interface GameDefinition {
   id: GameId;
   minPlayers: number;
   maxPlayers: number;
-  create(players: Player[], ctx: MatchContext): GameMatch;
+  /** Opciones que el anfitrión puede cambiar antes de empezar (reglas de la casa, etc.). */
+  defaultSettings?: () => GameSettings;
+  /** Valida y normaliza lo que manda el cliente. */
+  parseSettings?: (raw: unknown) => GameSettings;
+  create(players: Player[], ctx: MatchContext, settings?: GameSettings): GameMatch;
 }
+
+export type GameSettings = Record<string, unknown>;

@@ -12,6 +12,7 @@ import type {
   SendLobbyMessage,
   SendRoomMessage,
   StartGame,
+  UpdateRoomSettings,
 } from '../application/use-cases.js';
 import { DomainError, type Player } from '../domain/shared.js';
 
@@ -37,6 +38,7 @@ export interface UseCases {
   leaveRoom: LeaveRoom;
   startGame: StartGame;
   rematchRoom: RematchRoom;
+  updateSettings: UpdateRoomSettings;
   performAction: PerformGameAction;
   sendRoomMessage: SendRoomMessage;
   sendLobbyMessage: SendLobbyMessage;
@@ -77,6 +79,7 @@ export function registerSocketHandlers(io: Server, uc: UseCases, gatewaySecret: 
     on('room:chat', ({ text }) => uc.sendRoomMessage.execute(user, text));
     on('room:start', () => uc.startGame.execute(user.id));
     on('room:rematch', () => uc.rematchRoom.execute(user.id));
+    on('room:settings', ({ settings }) => uc.updateSettings.execute(user.id, settings));
     on('vote:start', () => uc.startVote.execute(user));
     on('vote:cast', ({ game }) => uc.castVote.execute(user, game));
     on('game:action', (action) => uc.performAction.execute(user.id, action));

@@ -16,6 +16,7 @@ const room = (id: string, outIds: string[] = [], withPlay = true): RoomState => 
   status: 'playing',
   min: 3,
   max: 12,
+  settings: {},
   chat: [],
   spectators: [],
   players: ['a', 'b', 'c'].map((u) => ({ id: u, username: u, connected: true, avatar })),

@@ -4,6 +4,7 @@ import { BlackjackGame } from './blackjack/blackjack-game.js';
 import { AmongUsGame } from './amongus/amongus-game.js';
 import { RouletteGame } from './roulette/roulette-game.js';
 import { UnoGame } from './uno/uno-game.js';
+import { defaultUnoSettings, parseUnoSettings } from './uno/uno-settings.js';
 
 /** Catálogo de juegos. Agregar un juego = implementar GameMatch y registrarlo aquí. */
 export const GAMES: Record<GameId, GameDefinition> = {
@@ -32,7 +33,9 @@ export const GAMES: Record<GameId, GameDefinition> = {
     id: 'uno',
     minPlayers: 2,
     maxPlayers: 10,
-    create: (players, ctx) => new UnoGame(players, ctx),
+    defaultSettings: () => ({ ...defaultUnoSettings() }),
+    parseSettings: (raw) => ({ ...parseUnoSettings(raw) }),
+    create: (players, ctx, settings) => new UnoGame(players, ctx, parseUnoSettings(settings)),
   },
   blackjack: {
     id: 'blackjack',
